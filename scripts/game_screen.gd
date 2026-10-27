@@ -63,6 +63,20 @@ func _ready() -> void:
 func _on_viewport_resized() -> void:
 	_update_safe_areas()
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible or not board or not is_instance_valid(board) or not board_holder or not is_instance_valid(board_holder):
+		return
+	if event is InputEventScreenTouch:
+		var st = event as InputEventScreenTouch
+		if not st.pressed:
+			var holder_local = board_holder.get_global_transform_with_canvas().affine_inverse() * st.position
+			board.handle_holder_touch_up(holder_local, st.index)
+	elif event is InputEventMouseButton:
+		var mb = event as InputEventMouseButton
+		if mb.button_index == MOUSE_BUTTON_LEFT and not mb.pressed:
+			var holder_local = board_holder.get_global_transform_with_canvas().affine_inverse() * mb.position
+			board.handle_holder_touch_up(holder_local, -1)
+
 func _update_safe_areas() -> void:
 	if safe_margin_container:
 		SafeAreaHelper.apply_safe_area_margins(safe_margin_container, get_viewport())

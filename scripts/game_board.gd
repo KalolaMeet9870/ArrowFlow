@@ -50,7 +50,7 @@ var _last_tap_holder_pos: Vector2 = Vector2.ZERO
 var _cached_grid_dots: PackedVector2Array = PackedVector2Array()
 
 # --- Long-Press Guidance State (Signature feature of ArrowFlow) ---
-const LONG_PRESS_THRESHOLD_MSEC: int = 220
+const LONG_PRESS_THRESHOLD_MSEC: int = 350
 var _held_arrow: Arrow = null
 var _touch_start_time: int = 0
 var _touch_start_pos: Vector2 = Vector2.ZERO
@@ -456,13 +456,13 @@ func handle_touch_down_local(local_pos: Vector2, pointer_id: int = -1) -> void:
 		return
 
 	var now = Time.get_ticks_msec()
-	# Deduplicate emulated mouse events following touch within 450ms
-	if pointer_id == -1 and (now - _last_touch_msec) < 450:
+	# Deduplicate emulated mouse events following touch within 250ms
+	if pointer_id == -1 and (now - _last_touch_msec) < 250:
 		return
 
-	# Only allow one active pointer at a time (ignore secondary multi-touch fingers)
-	if _active_pointer_id != -999 and _active_pointer_id != pointer_id:
-		return
+	# If an arrow was held from a previous touch, cancel it before accepting the new touch
+	if _held_arrow != null:
+		_cancel_guidance()
 
 	_active_pointer_id = pointer_id
 	if pointer_id >= 0:
@@ -490,11 +490,9 @@ func handle_touch_move_local(local_pos: Vector2, pointer_id: int = -1) -> void:
 func handle_touch_up_local(local_pos: Vector2, pointer_id: int = -1) -> void:
 	var now = Time.get_ticks_msec()
 	# Deduplicate emulated mouse up following touch up
-	if pointer_id == -1 and (now - _last_touch_msec) < 450:
+	if pointer_id == -1 and (now - _last_touch_msec) < 250:
 		return
 
-	if _active_pointer_id != -999 and _active_pointer_id != pointer_id:
-		return
 	_active_pointer_id = -999
 
 	if pointer_id >= 0:
@@ -510,8 +508,8 @@ func handle_touch_up_local(local_pos: Vector2, pointer_id: int = -1) -> void:
 
 	_cancel_guidance()
 
-	# High-reliability fallback: if _held_arrow was cleared but player completed a quick tap over an arrow
-	if arrow == null and (now - _touch_start_time) < 350:
+	# High-reliability fallback: if _held_arrow was cleared or missed, find arrow under tap
+	if arrow == null or not is_instance_valid(arrow):
 		arrow = get_arrow_at_local_pos(local_pos)
 
 	if arrow == null or arrow.state != Arrow.ArrowState.IDLE:
@@ -526,7 +524,7 @@ func handle_touch_up_local(local_pos: Vector2, pointer_id: int = -1) -> void:
 			# Blocked obstacle preview: released safely to cancel without penalty
 			pass
 	else:
-		# Quick tap (< 220ms)
+		# Quick tap (< 350ms)
 		_execute_arrow_tapped(arrow)
 
 ## World-coordinate variants for backwards compatibility with tests and top-level events
@@ -604,7 +602,7 @@ func _execute_arrow_tapped(arrow: Arrow) -> void:
 		is_input_locked = false
 
 		var dir_vec = CollisionChecker.direction_to_vector(arrow.direction)
-		var exit_distance = maxf(board_area_size.x, board_area_size.y) * 1.5
+		var exit_distance = maxf(board_area_size.x, board_area_size.y) * 2.5 + 1500.0
 		var target_pos = arrow.global_position + Vector2(float(dir_vec.x), float(dir_vec.y)) * exit_distance
 
 		print("[GameBoard] Animation started for Arrow ID=%d towards %s." % [a_id, target_pos])

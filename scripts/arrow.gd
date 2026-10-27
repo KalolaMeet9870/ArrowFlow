@@ -288,7 +288,7 @@ func _get_current_draw_points() -> PackedVector2Array:
 	res.append(_sample_track(s_head))
 	return res
 
-func animate_exit(target_pos: Vector2 = Vector2.ZERO, duration: float = 0.36) -> void:
+func animate_exit(target_pos: Vector2 = Vector2.ZERO, duration: float = 0.35) -> void:
 	state = ArrowState.EXITING
 	input_pickable = false
 	if collision_shape:
@@ -307,9 +307,9 @@ func animate_exit(target_pos: Vector2 = Vector2.ZERO, duration: float = 0.36) ->
 			f_dir = last_seg.normalized()
 
 	_exit_track = base_pts.duplicate()
-	var exit_dist = 2200.0
+	var exit_dist = 3000.0
 	if target_pos != Vector2.ZERO:
-		exit_dist = maxf(exit_dist, global_position.distance_to(target_pos) + 600.0)
+		exit_dist = maxf(exit_dist, global_position.distance_to(target_pos) + 1200.0)
 	_exit_track.append(tip + f_dir * exit_dist)
 
 	_exit_cum_dists = PackedFloat32Array([0.0])
@@ -317,14 +317,16 @@ func animate_exit(target_pos: Vector2 = Vector2.ZERO, duration: float = 0.36) ->
 		_exit_cum_dists.append(_exit_cum_dists[i] + _exit_track[i].distance_to(_exit_track[i + 1]))
 
 	_exit_arrow_len = _exit_cum_dists[_exit_track.size() - 2]
-	_exit_total_travel = _exit_arrow_len + maxf(cell_size * float(length) * 3.5, 1400.0)
+	# Total travel distance ensures the TAIL of the arrow completely clears the entire exit track off-screen:
+	_exit_total_travel = _exit_cum_dists[-1] + _exit_arrow_len + 200.0
 
 	_is_exiting = true
 	exit_progress = 0.0
 
 	var tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tween.tween_property(self, "exit_progress", 1.0, duration)
-	tween.tween_property(self, "modulate:a", 0.0, duration * 0.7).set_delay(duration * 0.3)
+	# Remain fully visible while flying through the screen; only fade out at the very end outside the viewport:
+	tween.tween_property(self, "modulate:a", 0.0, duration * 0.22).set_delay(duration * 0.78)
 
 	tween.chain().tween_callback(func():
 		state = ArrowState.REMOVED
