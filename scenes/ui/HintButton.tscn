@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://h8b1u2t3t4o5n"]
+
+[ext_resource type="Script" path="res://scripts/hint_button.gd" id="1_hb"]
+
+[node name="HintButton" type="Button"]
+custom_minimum_size = Vector2(62, 62)
+offset_right = 62.0
+offset_bottom = 62.0
+pivot_offset = Vector2(31, 31)
+focus_mode = 0
+script = ExtResource("1_hb")

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8h1e2a3r4t5d"]
+
+[ext_resource type="Script" path="res://scripts/heart_display.gd" id="1_hd"]
+
+[node name="HeartDisplay" type="HBoxContainer"]
+script = ExtResource("1_hd")

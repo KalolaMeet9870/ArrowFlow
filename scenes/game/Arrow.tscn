@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8n1a2b3c4d5e"]
+
+[ext_resource type="Script" path="res://scripts/arrow.gd" id="1_arr"]
+
+[node name="Arrow" type="Area2D"]
+input_pickable = true
+collision_layer = 1
+collision_mask = 1
+script = ExtResource("1_arr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]

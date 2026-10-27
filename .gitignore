@@ -1,0 +1,15 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+builds/*.apk
+builds/*.idsig
+
+# Python cache
+__pycache__/
+*.pyc

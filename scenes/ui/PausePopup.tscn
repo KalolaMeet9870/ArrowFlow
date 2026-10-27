@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://p8u1s2e3p4o5p"]
+
+[ext_resource type="Script" path="res://scripts/pause_popup.gd" id="1_pp"]
+
+[node name="PausePopup" type="PanelContainer"]
+script = ExtResource("1_pp")
