@@ -126,7 +126,7 @@ func _build_ui() -> void:
 	var lbl_title = Label.new()
 	lbl_title.text = "Daily Streak"
 	lbl_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl_title.add_theme_font_size_override("font_size", 28)
+	lbl_title.add_theme_font_size_override("font_size", 32)
 	lbl_title.add_theme_color_override("font_color", Color("#B57538"))
 	vbox.add_child(lbl_title)
 
@@ -134,19 +134,19 @@ func _build_ui() -> void:
 	var lbl_sub = Label.new()
 	lbl_sub.text = "A Daily Streak tracks your\nconsecutive winning days"
 	lbl_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl_sub.add_theme_font_size_override("font_size", 16)
+	lbl_sub.add_theme_font_size_override("font_size", 18)
 	lbl_sub.add_theme_color_override("font_color", Color("#7D6F64"))
 	vbox.add_child(lbl_sub)
 
 	# 4. Records Row (Pill Panel)
 	var records_panel = PanelContainer.new()
-	records_panel.custom_minimum_size = Vector2(380, 80)
+	records_panel.custom_minimum_size = Vector2(400, 90)
 	var rec_sb = StyleBoxFlat.new()
 	rec_sb.bg_color = Color("#F3ECE0")
-	rec_sb.corner_radius_top_left = 18
-	rec_sb.corner_radius_top_right = 18
-	rec_sb.corner_radius_bottom_left = 18
-	rec_sb.corner_radius_bottom_right = 18
+	rec_sb.corner_radius_top_left = 22
+	rec_sb.corner_radius_top_right = 22
+	rec_sb.corner_radius_bottom_left = 22
+	rec_sb.corner_radius_bottom_right = 22
 	records_panel.add_theme_stylebox_override("panel", rec_sb)
 	vbox.add_child(records_panel)
 
@@ -163,14 +163,14 @@ func _build_ui() -> void:
 	var lbl_cur_title = Label.new()
 	lbl_cur_title.text = "Current Record"
 	lbl_cur_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl_cur_title.add_theme_font_size_override("font_size", 13)
+	lbl_cur_title.add_theme_font_size_override("font_size", 15)
 	lbl_cur_title.add_theme_color_override("font_color", Color("#A1887F"))
 	left_vbox.add_child(lbl_cur_title)
 
 	lbl_current_val = Label.new()
 	lbl_current_val.text = "1"
 	lbl_current_val.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl_current_val.add_theme_font_size_override("font_size", 28)
+	lbl_current_val.add_theme_font_size_override("font_size", 32)
 	lbl_current_val.add_theme_color_override("font_color", Color("#B57538"))
 	left_vbox.add_child(lbl_current_val)
 
@@ -183,31 +183,31 @@ func _build_ui() -> void:
 	var lbl_best_title = Label.new()
 	lbl_best_title.text = "Best Record"
 	lbl_best_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl_best_title.add_theme_font_size_override("font_size", 13)
+	lbl_best_title.add_theme_font_size_override("font_size", 15)
 	lbl_best_title.add_theme_color_override("font_color", Color("#A1887F"))
 	right_vbox.add_child(lbl_best_title)
 
 	lbl_best_val = Label.new()
 	lbl_best_val.text = "2"
 	lbl_best_val.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl_best_val.add_theme_font_size_override("font_size", 28)
+	lbl_best_val.add_theme_font_size_override("font_size", 32)
 	lbl_best_val.add_theme_color_override("font_color", Color("#B57538"))
 	right_vbox.add_child(lbl_best_val)
 
 	# 5. OK Action Button
 	var btn_ok = Button.new()
 	btn_ok.text = "OK"
-	btn_ok.custom_minimum_size = Vector2(340, 56)
+	btn_ok.custom_minimum_size = Vector2(360, 64)
 	btn_ok.focus_mode = Control.FOCUS_NONE
 
 	var ok_sb = StyleBoxFlat.new()
 	ok_sb.bg_color = Color("#C07838")
-	ok_sb.corner_radius_top_left = 18
-	ok_sb.corner_radius_top_right = 18
-	ok_sb.corner_radius_bottom_left = 18
-	ok_sb.corner_radius_bottom_right = 18
-	ok_sb.shadow_size = 6
-	ok_sb.shadow_color = Color(0, 0, 0, 0.12)
+	ok_sb.corner_radius_top_left = 22
+	ok_sb.corner_radius_top_right = 22
+	ok_sb.corner_radius_bottom_left = 22
+	ok_sb.corner_radius_bottom_right = 22
+	ok_sb.shadow_size = 8
+	ok_sb.shadow_color = Color(0, 0, 0, 0.15)
 	ok_sb.shadow_offset = Vector2(0, 4)
 	btn_ok.add_theme_stylebox_override("normal", ok_sb)
 
@@ -219,7 +219,7 @@ func _build_ui() -> void:
 	ok_p_sb.bg_color = Color("#A8652D")
 	btn_ok.add_theme_stylebox_override("pressed", ok_p_sb)
 
-	btn_ok.add_theme_font_size_override("font_size", 20)
+	btn_ok.add_theme_font_size_override("font_size", 22)
 	btn_ok.add_theme_color_override("font_color", Color.WHITE)
 	btn_ok.pressed.connect(func():
 		if SoundManager.instance:

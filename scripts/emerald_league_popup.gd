@@ -77,12 +77,12 @@ func _build_ui() -> void:
 
 	# 2. Main Dialog Card
 	panel_container = PanelContainer.new()
-	panel_container.custom_minimum_size = Vector2(440, 680)
+	panel_container.custom_minimum_size = Vector2(480, 720)
 	var card_sb = StyleBoxFlat.new()
 	card_sb.bg_color = Color(0.12, 0.12, 0.12, 0.95)
-	card_sb.set_corner_radius_all(28)
-	card_sb.shadow_size = 20
-	card_sb.shadow_color = Color(0, 0, 0, 0.4)
+	card_sb.set_corner_radius_all(32)
+	card_sb.shadow_size = 24
+	card_sb.shadow_color = Color(0, 0, 0, 0.45)
 	card_sb.shadow_offset = Vector2(0, 8)
 	card_sb.border_width_left = 1
 	card_sb.border_width_top = 1
@@ -93,22 +93,22 @@ func _build_ui() -> void:
 	center.add_child(panel_container)
 
 	var card_margin = MarginContainer.new()
-	card_margin.add_theme_constant_override("margin_left", 24)
-	card_margin.add_theme_constant_override("margin_right", 24)
-	card_margin.add_theme_constant_override("margin_top", 24)
-	card_margin.add_theme_constant_override("margin_bottom", 24)
+	card_margin.add_theme_constant_override("margin_left", 28)
+	card_margin.add_theme_constant_override("margin_right", 28)
+	card_margin.add_theme_constant_override("margin_top", 28)
+	card_margin.add_theme_constant_override("margin_bottom", 28)
 	panel_container.add_child(card_margin)
 
 	var vbox = VBoxContainer.new()
 	vbox.alignment = BoxContainer.ALIGNMENT_BEGIN
-	vbox.add_theme_constant_override("separation", 12)
+	vbox.add_theme_constant_override("separation", 14)
 	card_margin.add_child(vbox)
 
 	# Title: 🌾 Emerald League 🌾
 	var lbl_title = Label.new()
 	lbl_title.text = "🌾 Emerald League 🌾"
 	lbl_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl_title.add_theme_font_size_override("font_size", 24)
+	lbl_title.add_theme_font_size_override("font_size", 28)
 	lbl_title.add_theme_color_override("font_color", Color("#F5D77F"))
 	vbox.add_child(lbl_title)
 
@@ -283,19 +283,19 @@ func _build_ui() -> void:
 	# Action Button: "Continue"
 	var btn_continue = Button.new()
 	btn_continue.text = "Continue"
-	btn_continue.custom_minimum_size = Vector2(0, 52)
+	btn_continue.custom_minimum_size = Vector2(0, 64)
 	btn_continue.focus_mode = Control.FOCUS_NONE
 	var c_sb = StyleBoxFlat.new()
 	c_sb.bg_color = Color("#C8782E")
-	c_sb.set_corner_radius_all(20)
-	c_sb.shadow_size = 6
+	c_sb.set_corner_radius_all(22)
+	c_sb.shadow_size = 8
 	c_sb.shadow_color = Color(0, 0, 0, 0.25)
-	c_sb.shadow_offset = Vector2(0, 3)
+	c_sb.shadow_offset = Vector2(0, 4)
 	btn_continue.add_theme_stylebox_override("normal", c_sb)
 	var c_h_sb = c_sb.duplicate() as StyleBoxFlat
 	c_h_sb.bg_color = Color("#D98538")
 	btn_continue.add_theme_stylebox_override("hover", c_h_sb)
-	btn_continue.add_theme_font_size_override("font_size", 20)
+	btn_continue.add_theme_font_size_override("font_size", 22)
 	btn_continue.add_theme_color_override("font_color", Color.WHITE)
 	btn_continue.pressed.connect(func():
 		hide_popup()

@@ -56,8 +56,8 @@ func _build_ui() -> void:
 	add_child(center)
 
 	card_panel = PanelContainer.new()
-	card_panel.custom_minimum_size = Vector2(340, 420)
-	card_panel.pivot_offset = Vector2(170, 210)
+	card_panel.custom_minimum_size = Vector2(400, 560)
+	card_panel.pivot_offset = Vector2(200, 280)
 
 	var sb = StyleBoxFlat.new()
 	sb.bg_color = Color("#FFFDF9")
@@ -66,23 +66,23 @@ func _build_ui() -> void:
 	sb.border_width_right = 2
 	sb.border_width_bottom = 2
 	sb.border_color = Color("#EADCC6")
-	sb.set_corner_radius_all(28)
-	sb.shadow_size = 20
+	sb.set_corner_radius_all(32)
+	sb.shadow_size = 24
 	sb.shadow_color = Color(0, 0, 0, 0.25)
 	sb.shadow_offset = Vector2(0, 8)
 	card_panel.add_theme_stylebox_override("panel", sb)
 	center.add_child(card_panel)
 
 	var margin = MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 24)
-	margin.add_theme_constant_override("margin_right", 24)
-	margin.add_theme_constant_override("margin_top", 18)
-	margin.add_theme_constant_override("margin_bottom", 24)
+	margin.add_theme_constant_override("margin_left", 30)
+	margin.add_theme_constant_override("margin_right", 30)
+	margin.add_theme_constant_override("margin_top", 24)
+	margin.add_theme_constant_override("margin_bottom", 28)
 	card_panel.add_child(margin)
 
 	var vbox = VBoxContainer.new()
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	vbox.add_theme_constant_override("separation", 14)
+	vbox.add_theme_constant_override("separation", 16)
 	margin.add_child(vbox)
 
 	# 1. Close Button ✕ (top-right, Image 6)
@@ -95,14 +95,14 @@ func _build_ui() -> void:
 
 	btn_close = Button.new()
 	btn_close.text = "✕"
-	btn_close.custom_minimum_size = Vector2(32, 32)
+	btn_close.custom_minimum_size = Vector2(40, 40)
 	btn_close.focus_mode = Control.FOCUS_NONE
 	var close_sb = StyleBoxFlat.new()
 	close_sb.bg_color = Color(0, 0, 0, 0)
 	btn_close.add_theme_stylebox_override("normal", close_sb)
 	btn_close.add_theme_stylebox_override("hover", close_sb)
 	btn_close.add_theme_stylebox_override("pressed", close_sb)
-	btn_close.add_theme_font_size_override("font_size", 18)
+	btn_close.add_theme_font_size_override("font_size", 24)
 	btn_close.add_theme_color_override("font_color", Color("#A08C7D"))
 	btn_close.pressed.connect(func():
 		_play_click()
@@ -116,12 +116,12 @@ func _build_ui() -> void:
 	vbox.add_child(emblem_center)
 
 	var heart_ctrl = Control.new()
-	heart_ctrl.custom_minimum_size = Vector2(64, 64)
+	heart_ctrl.custom_minimum_size = Vector2(84, 84)
 	heart_ctrl.draw.connect(func():
-		var c = Vector2(32, 30)
+		var c = Vector2(42, 40)
 		# Draw soft red badge circle
-		heart_ctrl.draw_circle(c, 28.0, Color("#FDE8E8"))
-		heart_ctrl.draw_circle(c, 24.0, Color("#F8D7DA"))
+		heart_ctrl.draw_circle(c, 38.0, Color("#FDE8E8"))
+		heart_ctrl.draw_circle(c, 32.0, Color("#F8D7DA"))
 	)
 	emblem_center.add_child(heart_ctrl)
 
@@ -130,14 +130,14 @@ func _build_ui() -> void:
 	lbl_heart.set_anchors_preset(Control.PRESET_FULL_RECT)
 	lbl_heart.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl_heart.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	lbl_heart.add_theme_font_size_override("font_size", 34)
+	lbl_heart.add_theme_font_size_override("font_size", 44)
 	heart_ctrl.add_child(lbl_heart)
 
 	# 3. Title: "Level Failed" (Image 6)
 	lbl_failed_title = Label.new()
 	lbl_failed_title.text = "Level Failed"
 	lbl_failed_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl_failed_title.add_theme_font_size_override("font_size", 22)
+	lbl_failed_title.add_theme_font_size_override("font_size", 28)
 	lbl_failed_title.add_theme_color_override("font_color", Color("#3E2723"))
 	vbox.add_child(lbl_failed_title)
 
@@ -145,24 +145,24 @@ func _build_ui() -> void:
 	lbl_failed_sub = Label.new()
 	lbl_failed_sub.text = "You made 3 wrong moves."
 	lbl_failed_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl_failed_sub.add_theme_font_size_override("font_size", 14)
+	lbl_failed_sub.add_theme_font_size_override("font_size", 18)
 	lbl_failed_sub.add_theme_color_override("font_color", Color("#8D6E63"))
 	vbox.add_child(lbl_failed_sub)
 
 	# Spacer
 	var spacer = Control.new()
-	spacer.custom_minimum_size = Vector2(0, 6)
+	spacer.custom_minimum_size = Vector2(0, 8)
 	vbox.add_child(spacer)
 
 	# 5. Green Button: "Continue / Watch an ad to continue" (Image 6)
 	btn_continue = Button.new()
-	btn_continue.custom_minimum_size = Vector2(260, 56)
+	btn_continue.custom_minimum_size = Vector2(320, 68)
 	btn_continue.focus_mode = Control.FOCUS_NONE
 	var cont_sb = StyleBoxFlat.new()
 	cont_sb.bg_color = Color("#4CAF50")
-	cont_sb.set_corner_radius_all(18)
-	cont_sb.shadow_size = 4
-	cont_sb.shadow_color = Color(0, 0, 0, 0.12)
+	cont_sb.set_corner_radius_all(22)
+	cont_sb.shadow_size = 6
+	cont_sb.shadow_color = Color(0, 0, 0, 0.15)
 	cont_sb.shadow_offset = Vector2(0, 3)
 	btn_continue.add_theme_stylebox_override("normal", cont_sb)
 	var cont_h = cont_sb.duplicate() as StyleBoxFlat
@@ -175,37 +175,37 @@ func _build_ui() -> void:
 	var cont_margin = MarginContainer.new()
 	cont_margin.set_anchors_preset(Control.PRESET_FULL_RECT)
 	cont_margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	cont_margin.add_theme_constant_override("margin_left", 14)
-	cont_margin.add_theme_constant_override("margin_right", 14)
+	cont_margin.add_theme_constant_override("margin_left", 18)
+	cont_margin.add_theme_constant_override("margin_right", 18)
 	btn_continue.add_child(cont_margin)
 
 	var cont_hbox = HBoxContainer.new()
 	cont_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	cont_hbox.add_theme_constant_override("separation", 12)
+	cont_hbox.add_theme_constant_override("separation", 14)
 	cont_hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	cont_margin.add_child(cont_hbox)
 
 	var lbl_play_icon = Label.new()
 	lbl_play_icon.text = "▶"
-	lbl_play_icon.add_theme_font_size_override("font_size", 20)
+	lbl_play_icon.add_theme_font_size_override("font_size", 24)
 	lbl_play_icon.add_theme_color_override("font_color", Color.WHITE)
 	cont_hbox.add_child(lbl_play_icon)
 
 	var cont_text_vbox = VBoxContainer.new()
 	cont_text_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	cont_text_vbox.add_theme_constant_override("separation", 1)
+	cont_text_vbox.add_theme_constant_override("separation", 2)
 	cont_text_vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	cont_hbox.add_child(cont_text_vbox)
 
 	var lbl_cont_title = Label.new()
 	lbl_cont_title.text = "Continue"
-	lbl_cont_title.add_theme_font_size_override("font_size", 16)
+	lbl_cont_title.add_theme_font_size_override("font_size", 20)
 	lbl_cont_title.add_theme_color_override("font_color", Color.WHITE)
 	cont_text_vbox.add_child(lbl_cont_title)
 
 	var lbl_cont_sub = Label.new()
 	lbl_cont_sub.text = "Watch an ad to continue"
-	lbl_cont_sub.add_theme_font_size_override("font_size", 11)
+	lbl_cont_sub.add_theme_font_size_override("font_size", 13)
 	lbl_cont_sub.add_theme_color_override("font_color", Color("#D5F5E3"))
 	cont_text_vbox.add_child(lbl_cont_sub)
 
@@ -218,13 +218,13 @@ func _build_ui() -> void:
 	btn_restart = Button.new()
 	btn_restart.text = "RESTART"
 	btn_restart.add_theme_color_override("font_color", Color.TRANSPARENT)
-	btn_restart.custom_minimum_size = Vector2(260, 52)
+	btn_restart.custom_minimum_size = Vector2(320, 60)
 	btn_restart.focus_mode = Control.FOCUS_NONE
 	var rest_sb = StyleBoxFlat.new()
 	rest_sb.bg_color = Color("#E74C3C")
-	rest_sb.set_corner_radius_all(18)
-	rest_sb.shadow_size = 4
-	rest_sb.shadow_color = Color(0, 0, 0, 0.12)
+	rest_sb.set_corner_radius_all(22)
+	rest_sb.shadow_size = 6
+	rest_sb.shadow_color = Color(0, 0, 0, 0.15)
 	rest_sb.shadow_offset = Vector2(0, 3)
 	btn_restart.add_theme_stylebox_override("normal", rest_sb)
 	var rest_h = rest_sb.duplicate() as StyleBoxFlat

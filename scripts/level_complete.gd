@@ -77,8 +77,8 @@ func _build_ui() -> void:
 	add_child(center)
 
 	card_panel = PanelContainer.new()
-	card_panel.custom_minimum_size = Vector2(340, 480)
-	card_panel.pivot_offset = Vector2(170, 240)
+	card_panel.custom_minimum_size = Vector2(400, 560)
+	card_panel.pivot_offset = Vector2(200, 280)
 
 	var sb = StyleBoxFlat.new()
 	sb.bg_color = Color("#FFFDF9")
@@ -87,23 +87,23 @@ func _build_ui() -> void:
 	sb.border_width_right = 2
 	sb.border_width_bottom = 2
 	sb.border_color = Color("#EADCC6")
-	sb.set_corner_radius_all(28)
-	sb.shadow_size = 20
+	sb.set_corner_radius_all(32)
+	sb.shadow_size = 24
 	sb.shadow_color = Color(0, 0, 0, 0.22)
 	sb.shadow_offset = Vector2(0, 8)
 	card_panel.add_theme_stylebox_override("panel", sb)
 	center.add_child(card_panel)
 
 	var margin = MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 24)
-	margin.add_theme_constant_override("margin_right", 24)
-	margin.add_theme_constant_override("margin_top", 24)
-	margin.add_theme_constant_override("margin_bottom", 24)
+	margin.add_theme_constant_override("margin_left", 30)
+	margin.add_theme_constant_override("margin_right", 30)
+	margin.add_theme_constant_override("margin_top", 28)
+	margin.add_theme_constant_override("margin_bottom", 28)
 	card_panel.add_child(margin)
 
 	var vbox = VBoxContainer.new()
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	vbox.add_theme_constant_override("separation", 14)
+	vbox.add_theme_constant_override("separation", 16)
 	margin.add_child(vbox)
 
 	# 1. Three Golden Stars (Image 5)
@@ -112,26 +112,26 @@ func _build_ui() -> void:
 
 	stars_container = HBoxContainer.new()
 	stars_container.alignment = BoxContainer.ALIGNMENT_CENTER
-	stars_container.add_theme_constant_override("separation", 10)
-	stars_container.pivot_offset = Vector2(75, 20)
+	stars_container.add_theme_constant_override("separation", 14)
+	stars_container.pivot_offset = Vector2(90, 24)
 	stars_center.add_child(stars_container)
 
 	for i in range(3):
 		var star_lbl = Label.new()
 		star_lbl.text = "⭐"
-		var s_size = 38 if i == 1 else 30
+		var s_size = 46 if i == 1 else 36
 		star_lbl.add_theme_font_size_override("font_size", s_size)
 		stars_container.add_child(star_lbl)
 
 	# 2. Orange Banner Ribbon: "Level Completed!" (Image 5)
 	var banner_panel = PanelContainer.new()
-	banner_panel.custom_minimum_size = Vector2(250, 44)
+	banner_panel.custom_minimum_size = Vector2(320, 54)
 	var bp_sb = StyleBoxFlat.new()
 	bp_sb.bg_color = Color("#E67E22")
-	bp_sb.set_corner_radius_all(22)
-	bp_sb.shadow_size = 4
+	bp_sb.set_corner_radius_all(26)
+	bp_sb.shadow_size = 6
 	bp_sb.shadow_color = Color(0.9, 0.5, 0.2, 0.25)
-	bp_sb.shadow_offset = Vector2(0, 2)
+	bp_sb.shadow_offset = Vector2(0, 3)
 	banner_panel.add_theme_stylebox_override("panel", bp_sb)
 	vbox.add_child(banner_panel)
 
@@ -139,7 +139,7 @@ func _build_ui() -> void:
 	lbl_banner.text = "Level Completed!"
 	lbl_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl_banner.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	lbl_banner.add_theme_font_size_override("font_size", 18)
+	lbl_banner.add_theme_font_size_override("font_size", 22)
 	lbl_banner.add_theme_color_override("font_color", Color.WHITE)
 	banner_panel.add_child(lbl_banner)
 
@@ -147,25 +147,25 @@ func _build_ui() -> void:
 	lbl_praise = Label.new()
 	lbl_praise.text = "Great Job!\nYou cleared the path."
 	lbl_praise.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl_praise.add_theme_font_size_override("font_size", 14)
+	lbl_praise.add_theme_font_size_override("font_size", 18)
 	lbl_praise.add_theme_color_override("font_color", Color("#5D4037"))
 	vbox.add_child(lbl_praise)
 
 	# 4. Reward Row: ⭐ +2 and Gift Box 🎁 (Image 5)
 	var reward_row = HBoxContainer.new()
 	reward_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	reward_row.add_theme_constant_override("separation", 18)
+	reward_row.add_theme_constant_override("separation", 20)
 	vbox.add_child(reward_row)
 
 	lbl_reward_coins = Label.new()
 	lbl_reward_coins.text = "⭐ +2"
-	lbl_reward_coins.add_theme_font_size_override("font_size", 18)
+	lbl_reward_coins.add_theme_font_size_override("font_size", 24)
 	lbl_reward_coins.add_theme_color_override("font_color", Color("#C8782E"))
 	reward_row.add_child(lbl_reward_coins)
 
 	var lbl_gift = Label.new()
 	lbl_gift.text = "🎁"
-	lbl_gift.add_theme_font_size_override("font_size", 22)
+	lbl_gift.add_theme_font_size_override("font_size", 28)
 	reward_row.add_child(lbl_gift)
 
 	# Spacer
@@ -176,13 +176,13 @@ func _build_ui() -> void:
 	# 5. Primary CTA: "Next Level" (Image 5)
 	btn_next = Button.new()
 	btn_next.text = "Next Level"
-	btn_next.custom_minimum_size = Vector2(250, 52)
+	btn_next.custom_minimum_size = Vector2(320, 64)
 	btn_next.focus_mode = Control.FOCUS_NONE
 	var next_sb = StyleBoxFlat.new()
 	next_sb.bg_color = Color("#E67E22")
-	next_sb.set_corner_radius_all(18)
-	next_sb.shadow_size = 4
-	next_sb.shadow_color = Color(0, 0, 0, 0.1)
+	next_sb.set_corner_radius_all(22)
+	next_sb.shadow_size = 6
+	next_sb.shadow_color = Color(0, 0, 0, 0.15)
 	next_sb.shadow_offset = Vector2(0, 3)
 	btn_next.add_theme_stylebox_override("normal", next_sb)
 	var next_h = next_sb.duplicate() as StyleBoxFlat
@@ -191,7 +191,7 @@ func _build_ui() -> void:
 	var next_p = next_sb.duplicate() as StyleBoxFlat
 	next_p.bg_color = Color("#E67E22").darkened(0.1)
 	btn_next.add_theme_stylebox_override("pressed", next_p)
-	btn_next.add_theme_font_size_override("font_size", 17)
+	btn_next.add_theme_font_size_override("font_size", 22)
 	btn_next.add_theme_color_override("font_color", Color.WHITE)
 	btn_next.pressed.connect(func():
 		_play_click()
@@ -203,7 +203,7 @@ func _build_ui() -> void:
 	# 6. Secondary Action: "Home" (Image 5)
 	btn_home = Button.new()
 	btn_home.text = "Home"
-	btn_home.custom_minimum_size = Vector2(250, 48)
+	btn_home.custom_minimum_size = Vector2(320, 58)
 	btn_home.focus_mode = Control.FOCUS_NONE
 	var home_sb = StyleBoxFlat.new()
 	home_sb.bg_color = Color("#F5EFE4")
@@ -212,7 +212,7 @@ func _build_ui() -> void:
 	home_sb.border_width_right = 1
 	home_sb.border_width_bottom = 1
 	home_sb.border_color = Color("#DFD3C1")
-	home_sb.set_corner_radius_all(18)
+	home_sb.set_corner_radius_all(20)
 	btn_home.add_theme_stylebox_override("normal", home_sb)
 	var home_h = home_sb.duplicate() as StyleBoxFlat
 	home_h.bg_color = Color("#F5EFE4").lightened(0.08)
@@ -220,7 +220,7 @@ func _build_ui() -> void:
 	var home_p = home_sb.duplicate() as StyleBoxFlat
 	home_p.bg_color = Color("#F5EFE4").darkened(0.08)
 	btn_home.add_theme_stylebox_override("pressed", home_p)
-	btn_home.add_theme_font_size_override("font_size", 16)
+	btn_home.add_theme_font_size_override("font_size", 20)
 	btn_home.add_theme_color_override("font_color", Color("#5D4037"))
 	btn_home.pressed.connect(func():
 		_play_click()

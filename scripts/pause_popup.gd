@@ -48,7 +48,7 @@ func _build_ui() -> void:
 	var title = Label.new()
 	title.text = "GAME PAUSED"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 22)
+	title.add_theme_font_size_override("font_size", 26)
 	title.add_theme_color_override("font_color", Color("#B37B24"))
 	vbox.add_child(title)
 
@@ -85,22 +85,22 @@ func _build_ui() -> void:
 func _create_menu_button(label_text: String, bg_color: Color) -> Button:
 	var btn = Button.new()
 	btn.text = label_text
-	btn.custom_minimum_size = Vector2(210, 42)
+	btn.custom_minimum_size = Vector2(280, 56)
 	btn.focus_mode = Control.FOCUS_NONE
 
 	var normal_sb = StyleBoxFlat.new()
 	normal_sb.bg_color = bg_color
-	normal_sb.corner_radius_top_left = 12
-	normal_sb.corner_radius_top_right = 12
-	normal_sb.corner_radius_bottom_left = 12
-	normal_sb.corner_radius_bottom_right = 12
+	normal_sb.corner_radius_top_left = 16
+	normal_sb.corner_radius_top_right = 16
+	normal_sb.corner_radius_bottom_left = 16
+	normal_sb.corner_radius_bottom_right = 16
 	btn.add_theme_stylebox_override("normal", normal_sb)
 
 	var hover_sb = normal_sb.duplicate() as StyleBoxFlat
 	hover_sb.bg_color = bg_color.lightened(0.12)
 	btn.add_theme_stylebox_override("hover", hover_sb)
 
-	btn.add_theme_font_size_override("font_size", 14)
+	btn.add_theme_font_size_override("font_size", 18)
 	return btn
 
 func show_popup() -> void:

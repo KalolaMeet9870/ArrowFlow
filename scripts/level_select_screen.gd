@@ -116,7 +116,7 @@ func refresh_levels(completed_id: int = -1) -> void:
 
 	for lvl_i in range(1, 51):
 		var btn = Button.new()
-		btn.custom_minimum_size = Vector2(56, 56)
+		btn.custom_minimum_size = Vector2(84, 84)
 		btn.focus_mode = Control.FOCUS_NONE
 
 		var is_unlocked = (lvl_i <= highest_unlocked)
@@ -124,17 +124,17 @@ func refresh_levels(completed_id: int = -1) -> void:
 		var is_current = (lvl_i == highest_unlocked)
 
 		var sb = StyleBoxFlat.new()
-		sb.set_corner_radius_all(28) # Perfectly circular buttons matching Image 3
+		sb.set_corner_radius_all(42) # Perfectly circular buttons matching Image 3
 
 		if is_done:
 			# Completed level: Warm orange filled circle with bold white level number
 			sb.bg_color = Color("#D97324")
-			sb.shadow_size = 3
-			sb.shadow_color = Color(0, 0, 0, 0.08)
-			sb.shadow_offset = Vector2(0, 2)
+			sb.shadow_size = 5
+			sb.shadow_color = Color(0, 0, 0, 0.12)
+			sb.shadow_offset = Vector2(0, 3)
 			btn.add_theme_color_override("font_color", Color.WHITE)
 			btn.text = str(lvl_i)
-			btn.add_theme_font_size_override("font_size", 16)
+			btn.add_theme_font_size_override("font_size", 26)
 			btn.disabled = false
 		elif is_current:
 			# Current unlocked active level: Highlighted warm orange with bright accent border
@@ -144,12 +144,12 @@ func refresh_levels(completed_id: int = -1) -> void:
 			sb.border_width_right = 3
 			sb.border_width_bottom = 3
 			sb.border_color = Color("#F9E79F")
-			sb.shadow_size = 5
-			sb.shadow_color = Color(0.9, 0.5, 0.2, 0.25)
-			sb.shadow_offset = Vector2(0, 2)
+			sb.shadow_size = 8
+			sb.shadow_color = Color(0.9, 0.5, 0.2, 0.35)
+			sb.shadow_offset = Vector2(0, 3)
 			btn.add_theme_color_override("font_color", Color.WHITE)
 			btn.text = str(lvl_i)
-			btn.add_theme_font_size_override("font_size", 17)
+			btn.add_theme_font_size_override("font_size", 28)
 			btn.disabled = false
 		else:
 			# STRICTLY LOCKED LEVEL: Inaccessible light sand circle with lock icon
@@ -161,7 +161,7 @@ func refresh_levels(completed_id: int = -1) -> void:
 			sb.border_color = Color("#D8CBB7")
 			btn.add_theme_color_override("font_color", Color("#9E9282"))
 			btn.text = "🔒\n%d" % lvl_i
-			btn.add_theme_font_size_override("font_size", 11)
+			btn.add_theme_font_size_override("font_size", 16)
 			btn.disabled = true
 			btn.mouse_filter = Control.MOUSE_FILTER_STOP
 
@@ -219,14 +219,14 @@ func _build_ui() -> void:
 
 	btn_back = Button.new()
 	btn_back.text = "←"
-	btn_back.custom_minimum_size = Vector2(44, 44)
+	btn_back.custom_minimum_size = Vector2(56, 56)
 	btn_back.focus_mode = Control.FOCUS_NONE
 	var back_sb = StyleBoxFlat.new()
 	back_sb.bg_color = Color(0, 0, 0, 0)
 	btn_back.add_theme_stylebox_override("normal", back_sb)
 	btn_back.add_theme_stylebox_override("hover", back_sb)
 	btn_back.add_theme_stylebox_override("pressed", back_sb)
-	btn_back.add_theme_font_size_override("font_size", 28)
+	btn_back.add_theme_font_size_override("font_size", 34)
 	btn_back.add_theme_color_override("font_color", Color("#4A3525"))
 	btn_back.pressed.connect(func():
 		_play_click()
@@ -241,12 +241,12 @@ func _build_ui() -> void:
 	lbl_title = Label.new()
 	lbl_title.text = "Level Select"
 	lbl_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl_title.add_theme_font_size_override("font_size", 22)
+	lbl_title.add_theme_font_size_override("font_size", 28)
 	lbl_title.add_theme_color_override("font_color", Color("#4A3525"))
 	title_center.add_child(lbl_title)
 
 	var dummy = Control.new()
-	dummy.custom_minimum_size = Vector2(44, 44)
+	dummy.custom_minimum_size = Vector2(56, 56)
 	top_bar.add_child(dummy)
 
 	# --- 2. EMERALD LEAGUE PROGRESS CARD (Image 3) ---
@@ -258,22 +258,22 @@ func _build_ui() -> void:
 	ec_sb.border_width_right = 1
 	ec_sb.border_width_bottom = 1
 	ec_sb.border_color = Color("#E5D7C3")
-	ec_sb.set_corner_radius_all(18)
-	ec_sb.shadow_size = 4
-	ec_sb.shadow_color = Color(0, 0, 0, 0.05)
-	ec_sb.shadow_offset = Vector2(0, 2)
+	ec_sb.set_corner_radius_all(22)
+	ec_sb.shadow_size = 6
+	ec_sb.shadow_color = Color(0, 0, 0, 0.07)
+	ec_sb.shadow_offset = Vector2(0, 3)
 	emerald_card.add_theme_stylebox_override("panel", ec_sb)
 	vbox.add_child(emerald_card)
 
 	var ec_margin = MarginContainer.new()
-	ec_margin.add_theme_constant_override("margin_left", 16)
-	ec_margin.add_theme_constant_override("margin_right", 16)
-	ec_margin.add_theme_constant_override("margin_top", 12)
-	ec_margin.add_theme_constant_override("margin_bottom", 12)
+	ec_margin.add_theme_constant_override("margin_left", 20)
+	ec_margin.add_theme_constant_override("margin_right", 20)
+	ec_margin.add_theme_constant_override("margin_top", 16)
+	ec_margin.add_theme_constant_override("margin_bottom", 16)
 	emerald_card.add_child(ec_margin)
 
 	var ec_vbox = VBoxContainer.new()
-	ec_vbox.add_theme_constant_override("separation", 8)
+	ec_vbox.add_theme_constant_override("separation", 10)
 	ec_margin.add_child(ec_vbox)
 
 	var ec_row = HBoxContainer.new()
@@ -282,12 +282,12 @@ func _build_ui() -> void:
 
 	var lbl_crown = Label.new()
 	lbl_crown.text = "👑"
-	lbl_crown.add_theme_font_size_override("font_size", 18)
+	lbl_crown.add_theme_font_size_override("font_size", 24)
 	ec_row.add_child(lbl_crown)
 
 	var lbl_league_name = Label.new()
 	lbl_league_name.text = "Emerald League"
-	lbl_league_name.add_theme_font_size_override("font_size", 15)
+	lbl_league_name.add_theme_font_size_override("font_size", 20)
 	lbl_league_name.add_theme_color_override("font_color", Color("#4A3525"))
 	ec_row.add_child(lbl_league_name)
 
@@ -297,21 +297,21 @@ func _build_ui() -> void:
 
 	lbl_league_progress = Label.new()
 	lbl_league_progress.text = "1/50"
-	lbl_league_progress.add_theme_font_size_override("font_size", 14)
+	lbl_league_progress.add_theme_font_size_override("font_size", 18)
 	lbl_league_progress.add_theme_color_override("font_color", Color("#8D6E63"))
 	ec_row.add_child(lbl_league_progress)
 
 	# Smooth progress bar
 	league_progress_bar = ProgressBar.new()
-	league_progress_bar.custom_minimum_size = Vector2(0, 8)
+	league_progress_bar.custom_minimum_size = Vector2(0, 12)
 	league_progress_bar.show_percentage = false
 	var lpb_bg = StyleBoxFlat.new()
 	lpb_bg.bg_color = Color("#E6DAC8")
-	lpb_bg.set_corner_radius_all(4)
+	lpb_bg.set_corner_radius_all(6)
 	league_progress_bar.add_theme_stylebox_override("background", lpb_bg)
 	var lpb_fill = StyleBoxFlat.new()
 	lpb_fill.bg_color = Color("#D97324")
-	lpb_fill.set_corner_radius_all(4)
+	lpb_fill.set_corner_radius_all(6)
 	league_progress_bar.add_theme_stylebox_override("fill", lpb_fill)
 	ec_vbox.add_child(league_progress_bar)
 
@@ -324,32 +324,35 @@ func _build_ui() -> void:
 	s_sb.border_width_right = 2
 	s_sb.border_width_bottom = 2
 	s_sb.border_color = Color("#4CAF50")
-	s_sb.set_corner_radius_all(14)
+	s_sb.set_corner_radius_all(16)
 	status_banner.add_theme_stylebox_override("panel", s_sb)
 	vbox.add_child(status_banner)
 
 	var s_margin = MarginContainer.new()
-	s_margin.add_theme_constant_override("margin_left", 12)
-	s_margin.add_theme_constant_override("margin_right", 12)
-	s_margin.add_theme_constant_override("margin_top", 8)
-	s_margin.add_theme_constant_override("margin_bottom", 8)
+	s_margin.add_theme_constant_override("margin_left", 14)
+	s_margin.add_theme_constant_override("margin_right", 14)
+	s_margin.add_theme_constant_override("margin_top", 10)
+	s_margin.add_theme_constant_override("margin_bottom", 10)
 	status_banner.add_child(s_margin)
 
 	lbl_status_banner = Label.new()
 	lbl_status_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl_status_banner.add_theme_font_size_override("font_size", 13)
+	lbl_status_banner.add_theme_font_size_override("font_size", 16)
 	lbl_status_banner.add_theme_color_override("font_color", Color("#2E7D32"))
 	s_margin.add_child(lbl_status_banner)
 	status_banner.hide()
 
 	btn_next_level = Button.new()
-	btn_next_level.custom_minimum_size = Vector2(0, 48)
+	btn_next_level.custom_minimum_size = Vector2(0, 64)
 	btn_next_level.focus_mode = Control.FOCUS_NONE
 	var nl_sb = StyleBoxFlat.new()
 	nl_sb.bg_color = Color("#C8782E")
-	nl_sb.set_corner_radius_all(16)
+	nl_sb.set_corner_radius_all(22)
+	nl_sb.shadow_size = 8
+	nl_sb.shadow_color = Color(0, 0, 0, 0.15)
+	nl_sb.shadow_offset = Vector2(0, 3)
 	btn_next_level.add_theme_stylebox_override("normal", nl_sb)
-	btn_next_level.add_theme_font_size_override("font_size", 15)
+	btn_next_level.add_theme_font_size_override("font_size", 20)
 	btn_next_level.add_theme_color_override("font_color", Color.WHITE)
 	btn_next_level.pressed.connect(func():
 		_play_click()

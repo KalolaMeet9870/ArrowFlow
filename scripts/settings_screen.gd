@@ -81,14 +81,14 @@ func _build_ui() -> void:
 
 	var btn_back = Button.new()
 	btn_back.text = "←"
-	btn_back.custom_minimum_size = Vector2(44, 44)
+	btn_back.custom_minimum_size = Vector2(56, 56)
 	btn_back.focus_mode = Control.FOCUS_NONE
 	var back_sb = StyleBoxFlat.new()
 	back_sb.bg_color = Color(0, 0, 0, 0)
 	btn_back.add_theme_stylebox_override("normal", back_sb)
 	btn_back.add_theme_stylebox_override("hover", back_sb)
 	btn_back.add_theme_stylebox_override("pressed", back_sb)
-	btn_back.add_theme_font_size_override("font_size", 28)
+	btn_back.add_theme_font_size_override("font_size", 34)
 	btn_back.add_theme_color_override("font_color", Color("#4A3525"))
 	btn_back.pressed.connect(func():
 		_play_click()
@@ -102,12 +102,12 @@ func _build_ui() -> void:
 
 	var lbl_header_title = Label.new()
 	lbl_header_title.text = "Settings"
-	lbl_header_title.add_theme_font_size_override("font_size", 22)
+	lbl_header_title.add_theme_font_size_override("font_size", 28)
 	lbl_header_title.add_theme_color_override("font_color", Color("#4A3525"))
 	title_center.add_child(lbl_header_title)
 
 	var dummy = Control.new()
-	dummy.custom_minimum_size = Vector2(44, 44)
+	dummy.custom_minimum_size = Vector2(56, 56)
 	header_bar.add_child(dummy)
 
 	# --- 2. SCROLL CONTENT ---
@@ -235,25 +235,25 @@ func _create_card() -> PanelContainer:
 
 func _create_switch_row(icon_str: String, label_str: String, key: String, default_val: bool, callback: Callable) -> Control:
 	var row = HBoxContainer.new()
-	row.custom_minimum_size = Vector2(0, 48)
+	row.custom_minimum_size = Vector2(0, 58)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_theme_constant_override("separation", 14)
+	row.add_theme_constant_override("separation", 16)
 
 	var lbl_icon = Label.new()
 	lbl_icon.text = icon_str
-	lbl_icon.add_theme_font_size_override("font_size", 18)
+	lbl_icon.add_theme_font_size_override("font_size", 24)
 	row.add_child(lbl_icon)
 
 	var lbl_text = Label.new()
 	lbl_text.text = label_str
 	lbl_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	lbl_text.add_theme_font_size_override("font_size", 16)
+	lbl_text.add_theme_font_size_override("font_size", 20)
 	lbl_text.add_theme_color_override("font_color", Color("#4A3525"))
 	row.add_child(lbl_text)
 
 	# Animated Green Toggle Switch
 	var sw_btn = Button.new()
-	sw_btn.custom_minimum_size = Vector2(52, 28)
+	sw_btn.custom_minimum_size = Vector2(60, 32)
 	sw_btn.focus_mode = Control.FOCUS_NONE
 	var sw_empty = StyleBoxFlat.new()
 	sw_empty.bg_color = Color(0, 0, 0, 0)
@@ -269,19 +269,19 @@ func _create_switch_row(icon_str: String, label_str: String, key: String, defaul
 			"vibration": is_on = SaveManager.instance.vibration_enabled
 
 	sw_btn.set_meta("is_on", is_on)
-	sw_btn.set_meta("knob_x", 38.0 if is_on else 14.0)
+	sw_btn.set_meta("knob_x", 44.0 if is_on else 16.0)
 
 	sw_btn.draw.connect(func():
 		var on = sw_btn.get_meta("is_on", false)
-		var kx = sw_btn.get_meta("knob_x", 14.0)
+		var kx = sw_btn.get_meta("knob_x", 16.0)
 		var bg_c = Color("#4CAF50") if on else Color("#D8C8B5")
 		# Pill background
 		var pill_sb = StyleBoxFlat.new()
-		pill_sb.set_corner_radius_all(14)
+		pill_sb.set_corner_radius_all(16)
 		pill_sb.bg_color = bg_c
-		sw_btn.draw_style_box(pill_sb, Rect2(0, 0, 52, 28))
+		sw_btn.draw_style_box(pill_sb, Rect2(0, 0, 60, 32))
 		# Circular knob
-		sw_btn.draw_circle(Vector2(kx, 14.0), 11.0, Color.WHITE)
+		sw_btn.draw_circle(Vector2(kx, 16.0), 12.0, Color.WHITE)
 	)
 
 	sw_btn.pressed.connect(func():
@@ -290,12 +290,12 @@ func _create_switch_row(icon_str: String, label_str: String, key: String, defaul
 		var nxt = not cur
 		sw_btn.set_meta("is_on", nxt)
 
-		var target_x = 38.0 if nxt else 14.0
+		var target_x = 44.0 if nxt else 16.0
 		var tw = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 		tw.tween_method(func(val: float):
 			sw_btn.set_meta("knob_x", val)
 			sw_btn.queue_redraw()
-		, sw_btn.get_meta("knob_x", 14.0), target_x, 0.16)
+		, sw_btn.get_meta("knob_x", 16.0), target_x, 0.16)
 
 		callback.call(nxt)
 	)
@@ -306,7 +306,7 @@ func _create_switch_row(icon_str: String, label_str: String, key: String, defaul
 
 func _create_chevron_row(icon_str: String, title_str: String, val_str: String, on_click: Callable) -> Control:
 	var btn = Button.new()
-	btn.custom_minimum_size = Vector2(0, 48)
+	btn.custom_minimum_size = Vector2(0, 58)
 	btn.focus_mode = Control.FOCUS_NONE
 	var sb = StyleBoxFlat.new()
 	sb.bg_color = Color(0, 0, 0, 0)
@@ -316,31 +316,31 @@ func _create_chevron_row(icon_str: String, title_str: String, val_str: String, o
 	hbox.set_anchors_preset(Control.PRESET_FULL_RECT)
 	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hbox.add_theme_constant_override("separation", 14)
+	hbox.add_theme_constant_override("separation", 16)
 	btn.add_child(hbox)
 
 	var lbl_i = Label.new()
 	lbl_i.text = icon_str
-	lbl_i.add_theme_font_size_override("font_size", 18)
+	lbl_i.add_theme_font_size_override("font_size", 24)
 	hbox.add_child(lbl_i)
 
 	var lbl_t = Label.new()
 	lbl_t.text = title_str
 	lbl_t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	lbl_t.add_theme_font_size_override("font_size", 16)
+	lbl_t.add_theme_font_size_override("font_size", 20)
 	lbl_t.add_theme_color_override("font_color", Color("#4A3525"))
 	hbox.add_child(lbl_t)
 
 	var lbl_val = Label.new()
 	lbl_val.text = val_str
-	lbl_val.add_theme_font_size_override("font_size", 14)
+	lbl_val.add_theme_font_size_override("font_size", 18)
 	lbl_val.add_theme_color_override("font_color", Color("#8D6E63"))
 	hbox.add_child(lbl_val)
 	btn.set_meta("val_label", lbl_val)
 
 	var lbl_arr = Label.new()
 	lbl_arr.text = "›"
-	lbl_arr.add_theme_font_size_override("font_size", 22)
+	lbl_arr.add_theme_font_size_override("font_size", 26)
 	lbl_arr.add_theme_color_override("font_color", Color("#BDBDBD"))
 	hbox.add_child(lbl_arr)
 
@@ -349,7 +349,7 @@ func _create_chevron_row(icon_str: String, title_str: String, val_str: String, o
 
 func _create_link_row(icon_str: String, title_str: String, on_click: Callable) -> Control:
 	var btn = Button.new()
-	btn.custom_minimum_size = Vector2(0, 48)
+	btn.custom_minimum_size = Vector2(0, 58)
 	btn.focus_mode = Control.FOCUS_NONE
 	var sb = StyleBoxFlat.new()
 	sb.bg_color = Color(0, 0, 0, 0)
@@ -359,24 +359,24 @@ func _create_link_row(icon_str: String, title_str: String, on_click: Callable) -
 	hbox.set_anchors_preset(Control.PRESET_FULL_RECT)
 	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hbox.add_theme_constant_override("separation", 14)
+	hbox.add_theme_constant_override("separation", 16)
 	btn.add_child(hbox)
 
 	var lbl_i = Label.new()
 	lbl_i.text = icon_str
-	lbl_i.add_theme_font_size_override("font_size", 18)
+	lbl_i.add_theme_font_size_override("font_size", 24)
 	hbox.add_child(lbl_i)
 
 	var lbl_t = Label.new()
 	lbl_t.text = title_str
 	lbl_t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	lbl_t.add_theme_font_size_override("font_size", 16)
+	lbl_t.add_theme_font_size_override("font_size", 20)
 	lbl_t.add_theme_color_override("font_color", Color("#4A3525"))
 	hbox.add_child(lbl_t)
 
 	var lbl_arr = Label.new()
 	lbl_arr.text = "›"
-	lbl_arr.add_theme_font_size_override("font_size", 22)
+	lbl_arr.add_theme_font_size_override("font_size", 26)
 	lbl_arr.add_theme_color_override("font_color", Color("#BDBDBD"))
 	hbox.add_child(lbl_arr)
 

@@ -147,7 +147,7 @@ func _build_ui() -> void:
 	top_margin.add_child(header_bar)
 
 	# 1. Back button ← (Circular card)
-	var btn_back = _create_circle_btn("←", 22, 44.0)
+	var btn_back = _create_circle_btn("←", 30, 56.0)
 	btn_back.pressed.connect(func():
 		_play_click()
 		home_requested.emit()
@@ -165,7 +165,7 @@ func _build_ui() -> void:
 	lbl_level_title = Label.new()
 	lbl_level_title.text = "Level 1"
 	lbl_level_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl_level_title.add_theme_font_size_override("font_size", 26)
+	lbl_level_title.add_theme_font_size_override("font_size", 32)
 	lbl_level_title.add_theme_color_override("font_color", Color("#4A3525"))
 	title_box.add_child(lbl_level_title)
 
@@ -175,7 +175,7 @@ func _build_ui() -> void:
 	title_box.add_child(lbl_subtitle)
 
 	# 2. Theme switch button 🎨
-	btn_theme = _create_circle_btn("🎨", 18, 44.0)
+	btn_theme = _create_circle_btn("🎨", 26, 56.0)
 	btn_theme.tooltip_text = "Switch Color Theme"
 	btn_theme.pressed.connect(func():
 		_play_click()
@@ -184,7 +184,7 @@ func _build_ui() -> void:
 	header_bar.add_child(btn_theme)
 
 	# 3. Settings gear button ⚙
-	btn_settings = _create_circle_btn("⚙", 20, 44.0)
+	btn_settings = _create_circle_btn("⚙", 28, 56.0)
 	btn_settings.tooltip_text = "Settings"
 	btn_settings.pressed.connect(func():
 		_play_click()
@@ -293,24 +293,24 @@ func _build_ui() -> void:
 	dock_sb.border_width_right = 1
 	dock_sb.border_width_bottom = 1
 	dock_sb.border_color = Color("#DFCBB5")
-	dock_sb.set_corner_radius_all(23)
-	dock_sb.shadow_size = 8
-	dock_sb.shadow_color = Color(0, 0, 0, 0.14)
-	dock_sb.shadow_offset = Vector2(0, 3)
+	dock_sb.set_corner_radius_all(27)
+	dock_sb.shadow_size = 10
+	dock_sb.shadow_color = Color(0, 0, 0, 0.16)
+	dock_sb.shadow_offset = Vector2(0, 4)
 	zoom_dock.add_theme_stylebox_override("panel", dock_sb)
 	zoom_margin.add_child(zoom_dock)
 
 	var zoom_hbox = HBoxContainer.new()
-	zoom_hbox.add_theme_constant_override("separation", 4)
+	zoom_hbox.add_theme_constant_override("separation", 6)
 	zoom_dock.add_child(zoom_hbox)
 
 	# 1. Zoom Out Button [ − ]
 	var btn_zoom_out = Button.new()
 	btn_zoom_out.text = "−"
-	btn_zoom_out.custom_minimum_size = Vector2(46, 46)
+	btn_zoom_out.custom_minimum_size = Vector2(54, 54)
 	btn_zoom_out.focus_mode = Control.FOCUS_NONE
 	btn_zoom_out.flat = true
-	btn_zoom_out.add_theme_font_size_override("font_size", 24)
+	btn_zoom_out.add_theme_font_size_override("font_size", 30)
 	btn_zoom_out.add_theme_color_override("font_color", Color("#5A4A3E"))
 	btn_zoom_out.pressed.connect(func():
 		_play_click()
@@ -322,10 +322,10 @@ func _build_ui() -> void:
 	# 2. Reset Zoom Pill [ 100% / ⟲ ]
 	var btn_zoom_reset = Button.new()
 	btn_zoom_reset.text = "100%"
-	btn_zoom_reset.custom_minimum_size = Vector2(66, 46)
+	btn_zoom_reset.custom_minimum_size = Vector2(84, 54)
 	btn_zoom_reset.focus_mode = Control.FOCUS_NONE
 	btn_zoom_reset.flat = true
-	btn_zoom_reset.add_theme_font_size_override("font_size", 14)
+	btn_zoom_reset.add_theme_font_size_override("font_size", 16)
 	btn_zoom_reset.add_theme_color_override("font_color", Color("#8D6E63"))
 	btn_zoom_reset.pressed.connect(func():
 		_play_click()
@@ -337,10 +337,10 @@ func _build_ui() -> void:
 	# 3. Zoom In Button [ + ]
 	var btn_zoom_in = Button.new()
 	btn_zoom_in.text = "+"
-	btn_zoom_in.custom_minimum_size = Vector2(46, 46)
+	btn_zoom_in.custom_minimum_size = Vector2(54, 54)
 	btn_zoom_in.focus_mode = Control.FOCUS_NONE
 	btn_zoom_in.flat = true
-	btn_zoom_in.add_theme_font_size_override("font_size", 22)
+	btn_zoom_in.add_theme_font_size_override("font_size", 28)
 	btn_zoom_in.add_theme_color_override("font_color", Color("#5A4A3E"))
 	btn_zoom_in.pressed.connect(func():
 		_play_click()
@@ -531,13 +531,13 @@ func _create_bottom_action_card(icon_text: String, label_text: String, badge_tex
 
 func _create_top_hint_button() -> Dictionary:
 	var wrapper = Control.new()
-	wrapper.custom_minimum_size = Vector2(58, 48)
+	wrapper.custom_minimum_size = Vector2(68, 56)
 
 	var btn = Button.new()
 	btn.set_anchors_preset(Control.PRESET_FULL_RECT)
 	btn.text = "💡"
 	btn.focus_mode = Control.FOCUS_NONE
-	btn.add_theme_font_size_override("font_size", 24)
+	btn.add_theme_font_size_override("font_size", 30)
 	btn.add_theme_color_override("font_color", Color("#54483F"))
 
 	var norm_sb = StyleBoxFlat.new()
@@ -549,12 +549,12 @@ func _create_top_hint_button() -> Dictionary:
 
 	# AD Badge pill attached to top right corner of the bulb matching Image 5
 	var badge_panel = PanelContainer.new()
-	badge_panel.position = Vector2(28, 2)
-	badge_panel.custom_minimum_size = Vector2(26, 17)
+	badge_panel.position = Vector2(34, 2)
+	badge_panel.custom_minimum_size = Vector2(30, 20)
 	badge_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var b_sb = StyleBoxFlat.new()
 	b_sb.bg_color = Color("#E68A2E")
-	b_sb.set_corner_radius_all(8)
+	b_sb.set_corner_radius_all(10)
 	badge_panel.add_theme_stylebox_override("panel", b_sb)
 	wrapper.add_child(badge_panel)
 
@@ -562,7 +562,7 @@ func _create_top_hint_button() -> Dictionary:
 	badge_lbl.text = "3"
 	badge_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	badge_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	badge_lbl.add_theme_font_size_override("font_size", 10)
+	badge_lbl.add_theme_font_size_override("font_size", 12)
 	badge_lbl.add_theme_color_override("font_color", Color.WHITE)
 	badge_panel.add_child(badge_lbl)
 
