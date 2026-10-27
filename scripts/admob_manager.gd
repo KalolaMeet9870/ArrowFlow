@@ -180,7 +180,10 @@ func show_rewarded_ad(on_success: Callable, on_fail: Callable = Callable()) -> v
 func _on_native_rewarded_closed() -> void:
 	is_showing_ad = false
 	if current_reward_callback.is_valid():
-		current_reward_callback.call()
+		if current_reward_callback.get_argument_count() > 0:
+			current_reward_callback.call(true)
+		else:
+			current_reward_callback.call()
 		rewarded_ad_earned.emit("extra_life", 1)
 		rewarded_ad_closed.emit(true)
 	current_reward_callback = Callable()
@@ -557,12 +560,18 @@ func _close_mock_rewarded(grant_reward: bool) -> void:
 
 	if grant_reward:
 		if current_reward_callback.is_valid():
-			current_reward_callback.call()
+			if current_reward_callback.get_argument_count() > 0:
+				current_reward_callback.call(true)
+			else:
+				current_reward_callback.call()
 		rewarded_ad_earned.emit("extra_life", 1)
 		rewarded_ad_closed.emit(true)
 	else:
 		if current_fail_callback.is_valid():
-			current_fail_callback.call()
+			if current_fail_callback.get_argument_count() > 0:
+				current_fail_callback.call(false)
+			else:
+				current_fail_callback.call()
 		rewarded_ad_closed.emit(false)
 
 	current_reward_callback = Callable()

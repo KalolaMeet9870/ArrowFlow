@@ -19,6 +19,7 @@ signal level_completed(level_id: int, moves: int, hearts: int)
 signal level_failed(level_id: int)
 signal level_select_requested
 signal settings_requested
+signal theme_selection_requested
 
 const SafeAreaHelper = preload("res://scripts/safe_area_helper.gd")
 
@@ -178,8 +179,7 @@ func _build_ui() -> void:
 	btn_theme.tooltip_text = "Switch Color Theme"
 	btn_theme.pressed.connect(func():
 		_play_click()
-		if ThemeManager.instance:
-			ThemeManager.instance.next_theme()
+		theme_selection_requested.emit()
 	)
 	header_bar.add_child(btn_theme)
 

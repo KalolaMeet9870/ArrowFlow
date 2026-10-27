@@ -17,6 +17,8 @@ signal play_pressed
 signal daily_puzzle_pressed
 signal settings_pressed
 signal level_select_pressed
+signal profile_pressed
+signal event_pressed
 
 const DailyStreakPopupClass = preload("res://scripts/daily_streak_popup.gd")
 const EmeraldLeaguePopupClass = preload("res://scripts/emerald_league_popup.gd")
@@ -163,7 +165,7 @@ func _build_ui() -> void:
 	avatar_btn.add_theme_font_size_override("font_size", 22)
 	avatar_btn.pressed.connect(func():
 		_play_click()
-		_open_daily_streak()
+		profile_pressed.emit()
 	)
 	avatar_wrapper.add_child(avatar_btn)
 
@@ -284,6 +286,13 @@ func _build_ui() -> void:
 	lbl_title.add_theme_font_size_override("font_size", 42)
 	lbl_title.add_theme_color_override("font_color", Color("#4A3525"))
 	title_vbox.add_child(lbl_title)
+
+	var lbl_tagline = Label.new()
+	lbl_tagline.text = "CLEAR THE PATH"
+	lbl_tagline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl_tagline.add_theme_font_size_override("font_size", 13)
+	lbl_tagline.add_theme_color_override("font_color", Color("#8C7767"))
+	title_vbox.add_child(lbl_tagline)
 
 	# Balanced Spacing between Title and Level Track
 	var v_spacer2 = Control.new()
@@ -652,7 +661,7 @@ func _create_event_card() -> Control:
 	btn.add_theme_color_override("font_color", Color("#306945"))
 	btn.pressed.connect(func():
 		_play_click()
-		level_select_pressed.emit()
+		event_pressed.emit()
 	)
 	vbox.add_child(btn)
 

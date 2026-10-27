@@ -1,15 +1,16 @@
 class_name SettingsScreen
 extends Control
 
-## Settings Screen matching user screenshot 5.
+## Screen 10: Settings Screen (matching Reference Image 10).
 ## Features:
-## - Top Header with back arrow ← and "Settings" title.
-## - Card 1: Sound, Vibration, Music, Voice, Guideline, and Calm Mode toggles with animated switches.
-## - Card 2: "Save Your Progress" >
-## - Card 3: "Rate Us" >, "Feedback" >
-## - Card 4: "Privacy Policy" >, "Terms of Service" >
+## - Top Header with Back arrow ← and "Settings" title.
+## - Card 1 (Toggles): Sound, Music, Vibration with animated green switches.
+## - Card 2 (Preferences): Language ("English ›"), Theme ("Light ›").
+## - Card 3 (Info & Links): Privacy Policy, Terms of Service, Rate Us, More Games, How to Play.
 
 signal back_pressed
+signal theme_requested
+signal how_to_play_requested
 
 const SafeAreaHelper = preload("res://scripts/safe_area_helper.gd")
 
@@ -17,6 +18,7 @@ var bg_rect: ColorRect
 var main_margin: MarginContainer
 var scroll_box: ScrollContainer
 var switch_controls: Dictionary = {}
+var lbl_theme_val: Label
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -29,23 +31,26 @@ func _ready() -> void:
 	if get_tree() and get_tree().root:
 		get_tree().root.size_changed.connect(_update_safe_areas)
 
+	if ThemeManager.instance:
+		apply_theme(ThemeManager.instance.get_current_theme())
+
 func _update_safe_areas() -> void:
 	if main_margin:
-		SafeAreaHelper.apply_safe_area_margins(main_margin, get_viewport(), 0.0, 16.0, 8.0, 8.0)
+		SafeAreaHelper.apply_safe_area_margins(main_margin, get_viewport(), 0.0, 16.0, 14.0, 14.0)
 
 func apply_theme(theme: Dictionary) -> void:
 	if bg_rect:
 		bg_rect.color = theme.get("bg", Color("#FAF4E8"))
+	if lbl_theme_val and ThemeManager.instance:
+		var cur_name = ThemeManager.instance.get_current_theme().get("name", "Light")
+		lbl_theme_val.text = cur_name
 
 func _update_all_switches() -> void:
 	if not SaveManager.instance:
 		return
 	_set_switch_state("sound", SaveManager.instance.sound_enabled)
-	_set_switch_state("vibration", SaveManager.instance.vibration_enabled)
 	_set_switch_state("music", SaveManager.instance.music_enabled)
-	_set_switch_state("voice", SaveManager.instance.voice_enabled)
-	_set_switch_state("guideline", SaveManager.instance.guideline_enabled)
-	_set_switch_state("calm_mode", SaveManager.instance.calm_mode_enabled)
+	_set_switch_state("vibration", SaveManager.instance.vibration_enabled)
 
 func _set_switch_state(key: String, is_on: bool) -> void:
 	if switch_controls.has(key):
@@ -55,7 +60,6 @@ func _set_switch_state(key: String, is_on: bool) -> void:
 		sw.queue_redraw()
 
 func _build_ui() -> void:
-	# Zen cream background
 	bg_rect = ColorRect.new()
 	bg_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg_rect.color = Color("#FAF4E8")
@@ -70,9 +74,9 @@ func _build_ui() -> void:
 	main_vbox.add_theme_constant_override("separation", 16)
 	main_margin.add_child(main_vbox)
 
-	# --- TOP HEADER: ← Settings ---
+	# --- 1. TOP HEADER: [ ← ] [ Settings ] ---
 	var header_bar = HBoxContainer.new()
-	header_bar.add_theme_constant_override("separation", 14)
+	header_bar.alignment = BoxContainer.ALIGNMENT_BEGIN
 	main_vbox.add_child(header_bar)
 
 	var btn_back = Button.new()
@@ -92,289 +96,298 @@ func _build_ui() -> void:
 	)
 	header_bar.add_child(btn_back)
 
+	var title_center = CenterContainer.new()
+	title_center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header_bar.add_child(title_center)
+
 	var lbl_header_title = Label.new()
 	lbl_header_title.text = "Settings"
-	lbl_header_title.add_theme_font_size_override("font_size", 24)
+	lbl_header_title.add_theme_font_size_override("font_size", 22)
 	lbl_header_title.add_theme_color_override("font_color", Color("#4A3525"))
-	header_bar.add_child(lbl_header_title)
+	title_center.add_child(lbl_header_title)
 
-	# Scrollable content for cards
+	var dummy = Control.new()
+	dummy.custom_minimum_size = Vector2(44, 44)
+	header_bar.add_child(dummy)
+
+	# --- 2. SCROLL CONTENT ---
 	scroll_box = ScrollContainer.new()
 	scroll_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll_box.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll_box.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	main_vbox.add_child(scroll_box)
 
 	var content_vbox = VBoxContainer.new()
 	content_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content_vbox.add_theme_constant_override("separation", 14)
+	content_vbox.add_theme_constant_override("separation", 16)
 	scroll_box.add_child(content_vbox)
 
-	# ========================================================
-	# CARD 1: Preferences / Audio / Display Toggles
-	# ========================================================
-	var card1 = _create_card_container()
-	content_vbox.add_child(card1)
+	# --- CARD 1: AUDIO & HAPTIC TOGGLES (Image 10) ---
+	var card_toggles = _create_card()
+	content_vbox.add_child(card_toggles)
+	var toggles_vbox = VBoxContainer.new()
+	toggles_vbox.add_theme_constant_override("separation", 6)
+	card_toggles.get_node("Margin/VBox").add_child(toggles_vbox)
 
-	var card1_vbox = VBoxContainer.new()
-	card1_vbox.add_theme_constant_override("separation", 0)
-	card1.add_child(card1_vbox)
-
-	# 1. Sound
-	card1_vbox.add_child(_create_toggle_row("sound", "🔊", "Sound", true, func(val: bool):
+	toggles_vbox.add_child(_create_switch_row("🔊", "Sound", "sound", true, func(val: bool):
 		if SaveManager.instance:
 			SaveManager.instance.sound_enabled = val
 			SaveManager.instance.save_data()
-			if SoundManager.instance:
-				SoundManager.instance.is_muted = not val
 	))
-	card1_vbox.add_child(_create_divider())
+	toggles_vbox.add_child(_create_divider())
 
-	# 2. Vibration
-	card1_vbox.add_child(_create_toggle_row("vibration", "📳", "Vibration", true, func(val: bool):
-		if SaveManager.instance:
-			SaveManager.instance.vibration_enabled = val
-			SaveManager.instance.save_data()
-	))
-	card1_vbox.add_child(_create_divider())
-
-	# 3. Music
-	card1_vbox.add_child(_create_toggle_row("music", "🎵", "Music", true, func(val: bool):
+	toggles_vbox.add_child(_create_switch_row("🎵", "Music", "music", true, func(val: bool):
 		if SaveManager.instance:
 			SaveManager.instance.music_enabled = val
 			SaveManager.instance.save_data()
 	))
-	card1_vbox.add_child(_create_divider())
+	toggles_vbox.add_child(_create_divider())
 
-	# 4. Voice
-	card1_vbox.add_child(_create_toggle_row("voice", "🗣️", "Voice", true, func(val: bool):
+	toggles_vbox.add_child(_create_switch_row("📳", "Vibration", "vibration", true, func(val: bool):
 		if SaveManager.instance:
-			SaveManager.instance.voice_enabled = val
-			SaveManager.instance.save_data()
-	))
-	card1_vbox.add_child(_create_divider())
-
-	# 5. Guideline
-	card1_vbox.add_child(_create_toggle_row("guideline", "⊞", "Guideline", false, func(val: bool):
-		if SaveManager.instance:
-			SaveManager.instance.guideline_enabled = val
-			SaveManager.instance.save_data()
-	))
-	card1_vbox.add_child(_create_divider())
-
-	# 6. Calm Mode
-	card1_vbox.add_child(_create_toggle_row("calm_mode", "🪷", "Calm Mode", false, func(val: bool):
-		if SaveManager.instance:
-			SaveManager.instance.calm_mode_enabled = val
+			SaveManager.instance.vibration_enabled = val
 			SaveManager.instance.save_data()
 	))
 
-	# ========================================================
-	# CARD 2: Save Your Progress
-	# ========================================================
-	var card2 = _create_card_container()
-	content_vbox.add_child(card2)
+	# --- CARD 2: PREFERENCES (Language & Theme, Image 10) ---
+	var card_prefs = _create_card()
+	content_vbox.add_child(card_prefs)
+	var prefs_vbox = VBoxContainer.new()
+	prefs_vbox.add_theme_constant_override("separation", 6)
+	card_prefs.get_node("Margin/VBox").add_child(prefs_vbox)
 
-	var card2_vbox = VBoxContainer.new()
-	card2.add_child(card2_vbox)
-	card2_vbox.add_child(_create_nav_row("👤", "Save Your Progress", func():
-		_play_click()
-		if SaveManager.instance:
-			SaveManager.instance.save_data()
-	))
-
-	# ========================================================
-	# CARD 3: Rate Us & Feedback
-	# ========================================================
-	var card3 = _create_card_container()
-	content_vbox.add_child(card3)
-
-	var card3_vbox = VBoxContainer.new()
-	card3.add_child(card3_vbox)
-	card3_vbox.add_child(_create_nav_row("👍", "Rate Us", func():
-		_play_click()
-		OS.shell_open("https://play.google.com/store/apps/details?id=com.arrowflow.puzzle&hl=en&gl=US")
-	))
-	card3_vbox.add_child(_create_divider())
-	card3_vbox.add_child(_create_nav_row("💬", "Feedback", func():
+	prefs_vbox.add_child(_create_chevron_row("🌐", "Language", "English", func():
 		_play_click()
 	))
+	prefs_vbox.add_child(_create_divider())
 
-	# ========================================================
-	# CARD 4: Privacy Policy & Terms of Service
-	# ========================================================
-	var card4 = _create_card_container()
-	content_vbox.add_child(card4)
-
-	var card4_vbox = VBoxContainer.new()
-	card4.add_child(card4_vbox)
-	card4_vbox.add_child(_create_nav_row("💾", "Privacy Policy", func():
+	var cur_theme_name = "Light"
+	if ThemeManager.instance:
+		cur_theme_name = ThemeManager.instance.get_current_theme().get("name", "Light")
+	var theme_row = _create_chevron_row("🎨", "Theme", cur_theme_name, func():
 		_play_click()
-		OS.shell_open("https://policies.google.com/privacy")
-	))
-	card4_vbox.add_child(_create_divider())
-	card4_vbox.add_child(_create_nav_row("📄", "Terms of Service", func():
+		theme_requested.emit()
+	)
+	lbl_theme_val = theme_row.get_meta("val_label") as Label
+	prefs_vbox.add_child(theme_row)
+
+	# --- CARD 3: LINKS & TUTORIAL (Image 10) ---
+	var card_links = _create_card()
+	content_vbox.add_child(card_links)
+	var links_vbox = VBoxContainer.new()
+	links_vbox.add_theme_constant_override("separation", 6)
+	card_links.get_node("Margin/VBox").add_child(links_vbox)
+
+	links_vbox.add_child(_create_link_row("📄", "Privacy Policy", func():
 		_play_click()
-		OS.shell_open("https://policies.google.com/terms")
+		OS.shell_open("https://arrowflow.game/privacy")
+	))
+	links_vbox.add_child(_create_divider())
+
+	links_vbox.add_child(_create_link_row("📋", "Terms of Service", func():
+		_play_click()
+		OS.shell_open("https://arrowflow.game/terms")
+	))
+	links_vbox.add_child(_create_divider())
+
+	links_vbox.add_child(_create_link_row("⭐", "Rate Us", func():
+		_play_click()
+	))
+	links_vbox.add_child(_create_divider())
+
+	links_vbox.add_child(_create_link_row("🎮", "More Games", func():
+		_play_click()
+	))
+	links_vbox.add_child(_create_divider())
+
+	links_vbox.add_child(_create_link_row("❓", "How to Play", func():
+		_play_click()
+		how_to_play_requested.emit()
 	))
 
-func _create_card_container() -> PanelContainer:
-	var pc = PanelContainer.new()
-	pc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+func _create_card() -> PanelContainer:
+	var card = PanelContainer.new()
 	var sb = StyleBoxFlat.new()
-	sb.bg_color = Color("#FFFFFF")
-	sb.corner_radius_top_left = 20
-	sb.corner_radius_top_right = 20
-	sb.corner_radius_bottom_left = 20
-	sb.corner_radius_bottom_right = 20
+	sb.bg_color = Color("#FFFDF9")
+	sb.border_width_left = 1
+	sb.border_width_top = 1
+	sb.border_width_right = 1
+	sb.border_width_bottom = 1
+	sb.border_color = Color("#EAE0D0")
+	sb.set_corner_radius_all(20)
 	sb.shadow_size = 4
-	sb.shadow_color = Color(0, 0, 0, 0.04)
+	sb.shadow_color = Color(0, 0, 0, 0.05)
 	sb.shadow_offset = Vector2(0, 2)
-	pc.add_theme_stylebox_override("panel", sb)
-	return pc
+	card.add_theme_stylebox_override("panel", sb)
 
-func _create_toggle_row(key: String, icon_str: String, title_str: String, default_val: bool, callback: Callable) -> Control:
-	var row = Control.new()
-	row.custom_minimum_size = Vector2(0, 52)
-	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var margin = MarginContainer.new()
+	margin.name = "Margin"
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_right", 16)
+	margin.add_theme_constant_override("margin_top", 10)
+	margin.add_theme_constant_override("margin_bottom", 10)
+	card.add_child(margin)
 
-	var hbox = HBoxContainer.new()
-	hbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	hbox.add_theme_constant_override("separation", 12)
-	row.add_child(hbox)
+	var vbox = VBoxContainer.new()
+	vbox.name = "VBox"
+	margin.add_child(vbox)
+	return card
 
-	var left_pad = Control.new()
-	left_pad.custom_minimum_size = Vector2(8, 0)
-	hbox.add_child(left_pad)
+func _create_switch_row(icon_str: String, label_str: String, key: String, default_val: bool, callback: Callable) -> Control:
+	var row = HBoxContainer.new()
+	row.custom_minimum_size = Vector2(0, 48)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 14)
 
 	var lbl_icon = Label.new()
 	lbl_icon.text = icon_str
 	lbl_icon.add_theme_font_size_override("font_size", 18)
-	hbox.add_child(lbl_icon)
+	row.add_child(lbl_icon)
 
 	var lbl_text = Label.new()
-	lbl_text.text = title_str
+	lbl_text.text = label_str
+	lbl_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	lbl_text.add_theme_font_size_override("font_size", 16)
-	lbl_text.add_theme_color_override("font_color", Color("#6D5D52"))
-	hbox.add_child(lbl_text)
+	lbl_text.add_theme_color_override("font_color", Color("#4A3525"))
+	row.add_child(lbl_text)
 
-	var sp = Control.new()
-	sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hbox.add_child(sp)
-
-	# Interactive Pill Switch Drawer
-	var sw = Control.new()
-	sw.custom_minimum_size = Vector2(52, 28)
-	sw.set_meta("is_on", default_val)
-	sw.set_meta("knob_x", 38.0 if default_val else 14.0)
-
-	sw.draw.connect(func():
-		var is_on = sw.get_meta("is_on", true)
-		var knob_x = sw.get_meta("knob_x", 38.0)
-		var bg_c = Color("#C07838") if is_on else Color("#A3A8B0")
-
-		# Rounded pill background
-		var r = 14.0
-		sw.draw_circle(Vector2(r, r), r, bg_c)
-		sw.draw_circle(Vector2(52.0 - r, r), r, bg_c)
-		sw.draw_rect(Rect2(r, 0, 52.0 - r * 2.0, 28.0), bg_c)
-
-		# White Knob
-		sw.draw_circle(Vector2(knob_x, r), r - 3.0, Color.WHITE)
-	)
-
-	# Switch click handling
+	# Animated Green Toggle Switch
 	var sw_btn = Button.new()
-	sw_btn.set_anchors_preset(Control.PRESET_FULL_RECT)
+	sw_btn.custom_minimum_size = Vector2(52, 28)
 	sw_btn.focus_mode = Control.FOCUS_NONE
-	var trans_sb = StyleBoxFlat.new()
-	trans_sb.bg_color = Color(0, 0, 0, 0)
-	sw_btn.add_theme_stylebox_override("normal", trans_sb)
-	sw_btn.add_theme_stylebox_override("hover", trans_sb)
-	sw_btn.add_theme_stylebox_override("pressed", trans_sb)
-	sw.add_child(sw_btn)
+	var sw_empty = StyleBoxFlat.new()
+	sw_empty.bg_color = Color(0, 0, 0, 0)
+	sw_btn.add_theme_stylebox_override("normal", sw_empty)
+	sw_btn.add_theme_stylebox_override("hover", sw_empty)
+	sw_btn.add_theme_stylebox_override("pressed", sw_empty)
+
+	var is_on = default_val
+	if SaveManager.instance:
+		match key:
+			"sound": is_on = SaveManager.instance.sound_enabled
+			"music": is_on = SaveManager.instance.music_enabled
+			"vibration": is_on = SaveManager.instance.vibration_enabled
+
+	sw_btn.set_meta("is_on", is_on)
+	sw_btn.set_meta("knob_x", 38.0 if is_on else 14.0)
+
+	sw_btn.draw.connect(func():
+		var on = sw_btn.get_meta("is_on", false)
+		var kx = sw_btn.get_meta("knob_x", 14.0)
+		var bg_c = Color("#4CAF50") if on else Color("#D8C8B5")
+		# Pill background
+		var pill_sb = StyleBoxFlat.new()
+		pill_sb.set_corner_radius_all(14)
+		pill_sb.bg_color = bg_c
+		sw_btn.draw_style_box(pill_sb, Rect2(0, 0, 52, 28))
+		# Circular knob
+		sw_btn.draw_circle(Vector2(kx, 14.0), 11.0, Color.WHITE)
+	)
 
 	sw_btn.pressed.connect(func():
 		_play_click()
-		var new_val = not sw.get_meta("is_on", true)
-		sw.set_meta("is_on", new_val)
+		var cur = sw_btn.get_meta("is_on", false)
+		var nxt = not cur
+		sw_btn.set_meta("is_on", nxt)
 
-		# Animate knob
-		var target_x = 38.0 if new_val else 14.0
-		var tw = sw.create_tween()
+		var target_x = 38.0 if nxt else 14.0
+		var tw = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 		tw.tween_method(func(val: float):
-			sw.set_meta("knob_x", val)
-			sw.queue_redraw()
-		, sw.get_meta("knob_x", 14.0), target_x, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+			sw_btn.set_meta("knob_x", val)
+			sw_btn.queue_redraw()
+		, sw_btn.get_meta("knob_x", 14.0), target_x, 0.16)
 
-		callback.call(new_val)
+		callback.call(nxt)
 	)
 
-	hbox.add_child(sw)
-	switch_controls[key] = sw
-
-	var right_pad = Control.new()
-	right_pad.custom_minimum_size = Vector2(8, 0)
-	hbox.add_child(right_pad)
-
+	switch_controls[key] = sw_btn
+	row.add_child(sw_btn)
 	return row
 
-func _create_nav_row(icon_str: String, title_str: String, callback: Callable) -> Control:
+func _create_chevron_row(icon_str: String, title_str: String, val_str: String, on_click: Callable) -> Control:
 	var btn = Button.new()
-	btn.custom_minimum_size = Vector2(0, 52)
-	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	btn.custom_minimum_size = Vector2(0, 48)
 	btn.focus_mode = Control.FOCUS_NONE
-
 	var sb = StyleBoxFlat.new()
 	sb.bg_color = Color(0, 0, 0, 0)
 	btn.add_theme_stylebox_override("normal", sb)
-	btn.add_theme_stylebox_override("hover", sb)
-	btn.add_theme_stylebox_override("pressed", sb)
 
 	var hbox = HBoxContainer.new()
 	hbox.set_anchors_preset(Control.PRESET_FULL_RECT)
 	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	hbox.add_theme_constant_override("separation", 12)
 	hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hbox.add_theme_constant_override("separation", 14)
 	btn.add_child(hbox)
 
-	var left_pad = Control.new()
-	left_pad.custom_minimum_size = Vector2(8, 0)
-	hbox.add_child(left_pad)
+	var lbl_i = Label.new()
+	lbl_i.text = icon_str
+	lbl_i.add_theme_font_size_override("font_size", 18)
+	hbox.add_child(lbl_i)
 
-	var lbl_icon = Label.new()
-	lbl_icon.text = icon_str
-	lbl_icon.add_theme_font_size_override("font_size", 18)
-	hbox.add_child(lbl_icon)
+	var lbl_t = Label.new()
+	lbl_t.text = title_str
+	lbl_t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	lbl_t.add_theme_font_size_override("font_size", 16)
+	lbl_t.add_theme_color_override("font_color", Color("#4A3525"))
+	hbox.add_child(lbl_t)
 
-	var lbl_text = Label.new()
-	lbl_text.text = title_str
-	lbl_text.add_theme_font_size_override("font_size", 16)
-	lbl_text.add_theme_color_override("font_color", Color("#6D5D52"))
-	hbox.add_child(lbl_text)
+	var lbl_val = Label.new()
+	lbl_val.text = val_str
+	lbl_val.add_theme_font_size_override("font_size", 14)
+	lbl_val.add_theme_color_override("font_color", Color("#8D6E63"))
+	hbox.add_child(lbl_val)
+	btn.set_meta("val_label", lbl_val)
 
-	var sp = Control.new()
-	sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hbox.add_child(sp)
+	var lbl_arr = Label.new()
+	lbl_arr.text = "›"
+	lbl_arr.add_theme_font_size_override("font_size", 22)
+	lbl_arr.add_theme_color_override("font_color", Color("#BDBDBD"))
+	hbox.add_child(lbl_arr)
 
-	var lbl_chev = Label.new()
-	lbl_chev.text = "›"
-	lbl_chev.add_theme_font_size_override("font_size", 22)
-	lbl_chev.add_theme_color_override("font_color", Color("#A1887F"))
-	hbox.add_child(lbl_chev)
+	btn.pressed.connect(on_click)
+	return btn
 
-	var right_pad = Control.new()
-	right_pad.custom_minimum_size = Vector2(8, 0)
-	hbox.add_child(right_pad)
+func _create_link_row(icon_str: String, title_str: String, on_click: Callable) -> Control:
+	var btn = Button.new()
+	btn.custom_minimum_size = Vector2(0, 48)
+	btn.focus_mode = Control.FOCUS_NONE
+	var sb = StyleBoxFlat.new()
+	sb.bg_color = Color(0, 0, 0, 0)
+	btn.add_theme_stylebox_override("normal", sb)
 
-	btn.pressed.connect(callback)
+	var hbox = HBoxContainer.new()
+	hbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hbox.add_theme_constant_override("separation", 14)
+	btn.add_child(hbox)
+
+	var lbl_i = Label.new()
+	lbl_i.text = icon_str
+	lbl_i.add_theme_font_size_override("font_size", 18)
+	hbox.add_child(lbl_i)
+
+	var lbl_t = Label.new()
+	lbl_t.text = title_str
+	lbl_t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	lbl_t.add_theme_font_size_override("font_size", 16)
+	lbl_t.add_theme_color_override("font_color", Color("#4A3525"))
+	hbox.add_child(lbl_t)
+
+	var lbl_arr = Label.new()
+	lbl_arr.text = "›"
+	lbl_arr.add_theme_font_size_override("font_size", 22)
+	lbl_arr.add_theme_color_override("font_color", Color("#BDBDBD"))
+	hbox.add_child(lbl_arr)
+
+	btn.pressed.connect(on_click)
 	return btn
 
 func _create_divider() -> ColorRect:
-	var cr = ColorRect.new()
-	cr.custom_minimum_size = Vector2(0, 1)
-	cr.color = Color("#F3ECE0")
-	return cr
+	var div = ColorRect.new()
+	div.custom_minimum_size = Vector2(0, 1)
+	div.color = Color("#F3ECE0")
+	return div
 
 func _play_click() -> void:
 	if SoundManager.instance:

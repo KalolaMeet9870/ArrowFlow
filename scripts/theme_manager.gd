@@ -150,3 +150,10 @@ func set_theme_by_idx(idx: int) -> Dictionary:
 	var th = get_current_theme()
 	theme_changed.emit(th)
 	return th
+
+func set_theme(idx: int) -> Dictionary:
+	return set_theme_by_idx(idx)
+
+var current_theme_index: int:
+	get:
+		return current_theme_idx

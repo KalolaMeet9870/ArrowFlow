@@ -22,6 +22,10 @@ var daily_puzzle_date: String = ""
 var daily_streak: int = 1
 var current_streak: int = 1
 var best_streak: int = 2
+var player_name: String = "Player123"
+var player_email: String = "player@example.com"
+var event_progress: int = 3
+var event_max: int = 10
 
 func _enter_tree() -> void:
 	instance = self
@@ -48,7 +52,11 @@ func save_data() -> void:
 		"daily_puzzle_date": daily_puzzle_date,
 		"daily_streak": daily_streak,
 		"current_streak": current_streak,
-		"best_streak": best_streak
+		"best_streak": best_streak,
+		"player_name": player_name,
+		"player_email": player_email,
+		"event_progress": event_progress,
+		"event_max": event_max
 	}
 	file.store_string(JSON.stringify(data, "\t"))
 	file.close()
@@ -86,6 +94,27 @@ func load_data() -> void:
 		daily_streak = int(data.get("daily_streak", 1))
 		current_streak = int(data.get("current_streak", 1))
 		best_streak = int(data.get("best_streak", 2))
+		player_name = str(data.get("player_name", "Player123"))
+		player_email = str(data.get("player_email", "player@example.com"))
+		event_progress = int(data.get("event_progress", 3))
+		event_max = int(data.get("event_max", 10))
+
+func get_completed_levels_count() -> int:
+	return completed_levels.size()
+
+func get_total_stars() -> int:
+	# Calculate total stars earned: each completed level awards up to 3 stars based on hearts
+	var total = 0
+	for k in completed_levels:
+		var rec = completed_levels[k]
+		total += int(rec.get("hearts", 3))
+	# Default to at least 36 if early player or calculate based on count
+	return maxi(total, completed_levels.size() * 3)
+
+func advance_event_progress() -> void:
+	if event_progress < event_max:
+		event_progress += 1
+		save_data()
 
 func record_level_completion(level_id: int, moves: int, hearts: int) -> void:
 	var id_str = str(level_id)
