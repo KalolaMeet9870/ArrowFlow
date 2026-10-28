@@ -28,11 +28,11 @@ var state: ArrowState = ArrowState.IDLE
 var occupied_cells: Array[Vector2i] = []
 var raw_points: PackedVector2Array = PackedVector2Array()
 
-var base_color: Color = Color("#4A3525")
-var current_color: Color = Color("#4A3525")
+var base_color: Color = Color("#3E2312")
+var current_color: Color = Color("#3E2312")
 var blocked_color: Color = Color("#E53935")
-var hint_color: Color = Color("#FFB300")
-var bg_color: Color = Color("#FAF4E8")
+var hint_color: Color = Color("#FFA028")
+var bg_color: Color = Color("#FAF6ED")
 
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 
@@ -383,8 +383,8 @@ func _draw() -> void:
 	if pts.size() < 2:
 		return
 
-	var stroke_width = maxf(4.2, cell_size * 0.13)
-	var head_len = clampf(cell_size * 0.40, 15.0, 28.0)
+	var stroke_width = clampf(cell_size * 0.28, 9.5, 13.5)
+	var head_len = clampf(cell_size * 0.58, 20.0, 32.0)
 	var head_half_w = head_len * 0.65
 
 	var tip = pts[-1]

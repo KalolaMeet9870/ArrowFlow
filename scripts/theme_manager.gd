@@ -13,23 +13,23 @@ const THEMES: Array[Dictionary] = [
 	{
 		"id": "warm_paper",
 		"name": "Eye Comfort",
-		"bg": Color("#FAF4E8"),
-		"dots": Color(0.75, 0.68, 0.58, 0.45),
-		"arrow_line": Color("#4A3525"),
-		"arrow_head": Color("#4A3525"),
+		"bg": Color("#FDF2E0"),
+		"dots": Color(0.92, 0.85, 0.77, 0.65),
+		"arrow_line": Color("#3E2312"),
+		"arrow_head": Color("#3E2312"),
 		"arrow_blocked": Color("#E53935"),
-		"arrow_hint": Color("#FFB300"),
+		"arrow_hint": Color("#FFA028"),
 		"guide_clear": Color("#2E7D32"),
 		"guide_blocked": Color("#E53935"),
-		"header_accent": Color("#B37B24"),
+		"header_accent": Color("#3E2312"),
 		"subtitle": Color("#8D6E63"),
 		"card_bg": Color("#FFFDF9"),
 		"card_border": Color("#E0D5C1"),
 		"banner_bg": Color("#D8C3A5"),
 		"banner_border": Color("#B89F7D"),
-		"banner_text": Color("#5D4037"),
+		"banner_text": Color("#3E2312"),
 		"btn_bg": Color("#FFFFFF"),
-		"btn_icon": Color("#5D4037")
+		"btn_icon": Color("#3E2312")
 	},
 	# 1: Midnight Zen (Dark Mode)
 	{

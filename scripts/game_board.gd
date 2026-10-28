@@ -67,12 +67,12 @@ var _hint_timer: float = 0.0
 
 # Theme cache
 var current_theme: Dictionary = {
-	"dots": Color(0.75, 0.68, 0.58, 0.45),
+	"dots": Color(0.92, 0.85, 0.77, 0.65),
 	"guide_clear": Color("#2E7D32"),
 	"guide_blocked": Color("#E53935"),
-	"arrow_line": Color("#4A3525"),
+	"arrow_line": Color("#3E2312"),
 	"arrow_blocked": Color("#E53935"),
-	"arrow_hint": Color("#FFB300")
+	"arrow_hint": Color("#FFA028")
 }
 
 func _ready() -> void:
@@ -131,7 +131,7 @@ func setup_level(level_data: Dictionary, display_size: Vector2 = Vector2.ZERO) -
 	var arrow_objs: Array = level_data.get("arrow_objects", [])
 
 	# Proportional grid sizing filling available screen space cleanly
-	var padding = 16.0
+	var padding = 8.0
 	var avail_w = maxf(board_area_size.x - padding * 2.0, 100.0)
 	var avail_h = maxf(board_area_size.y - padding * 2.0, 100.0)
 	var step_x = maxi(1, grid_size.x - 1)
@@ -139,7 +139,7 @@ func setup_level(level_data: Dictionary, display_size: Vector2 = Vector2.ZERO) -
 	var max_cell_w = avail_w / float(step_x)
 	var max_cell_h = avail_h / float(step_y)
 	cell_size = floorf(minf(max_cell_w, max_cell_h))
-	cell_size = clampf(cell_size, 18.0, 88.0)
+	cell_size = clampf(cell_size, 18.0, 110.0)
 
 	board_pixel_w = float(step_x) * cell_size
 	board_pixel_h = float(step_y) * cell_size
@@ -188,7 +188,7 @@ func update_board_size(new_size: Vector2) -> void:
 	if new_size.x < 50 or new_size.y < 50:
 		return
 	board_area_size = new_size
-	var padding = 16.0
+	var padding = 8.0
 	var avail_w = maxf(board_area_size.x - padding * 2.0, 100.0)
 	var avail_h = maxf(board_area_size.y - padding * 2.0, 100.0)
 	var step_x = maxi(1, grid_size.x - 1)
@@ -196,7 +196,7 @@ func update_board_size(new_size: Vector2) -> void:
 	var max_cell_w = avail_w / float(step_x)
 	var max_cell_h = avail_h / float(step_y)
 	cell_size = floorf(minf(max_cell_w, max_cell_h))
-	cell_size = clampf(cell_size, 18.0, 88.0)
+	cell_size = clampf(cell_size, 18.0, 110.0)
 
 	board_pixel_w = float(step_x) * cell_size
 	board_pixel_h = float(step_y) * cell_size
@@ -747,7 +747,7 @@ func _get_dir_name(dir: CollisionChecker.Direction) -> String:
 
 func _draw() -> void:
 	# 1. Clean ambient paper dots drawn from cached positions (ultra-fast 60fps rendering)
-	var dot_color: Color = current_theme.get("dots", Color(0.72, 0.65, 0.55, 0.45))
+	var dot_color: Color = current_theme.get("dots", Color(0.92, 0.85, 0.77, 0.65))
 	var dot_radius = 2.4
 
 	for pt in _cached_grid_dots:

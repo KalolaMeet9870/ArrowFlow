@@ -1,13 +1,16 @@
 class_name HeartDisplay
 extends HBoxContainer
 
-## Displays remaining lives/hearts/drops with smooth loss animations.
+## Displays remaining lives/hearts/drops with smooth loss animations matching ArrowFlow design.
 
-var drop_labels: Array[Label] = []
+const TEXTURE_DROP = preload("res://assets/icons/water_drop.png")
+const TEXTURE_EMPTY = preload("res://assets/icons/water_drop_empty.png")
+
+var drop_labels: Array[Control] = []
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_theme_constant_override("separation", 10)
+	add_theme_constant_override("separation", 18)
 	_build_drops(3)
 
 func _build_drops(count: int) -> void:
@@ -16,29 +19,35 @@ func _build_drops(count: int) -> void:
 	drop_labels.clear()
 
 	for i in range(count):
-		var lbl = Label.new()
-		lbl.text = "💧"
-		lbl.add_theme_font_size_override("font_size", 28)
-		lbl.add_theme_color_override("font_color", Color("#29B6F6"))
-		lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		lbl.pivot_offset = Vector2(14, 16)
-		add_child(lbl)
-		drop_labels.append(lbl)
+		var drop = TextureRect.new()
+		drop.name = "Drop%d" % i
+		drop.texture = TEXTURE_DROP
+		drop.custom_minimum_size = Vector2(68, 94)
+		drop.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		drop.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		drop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		drop.pivot_offset = Vector2(34, 47)
+		add_child(drop)
+		drop_labels.append(drop)
 
 func update_hearts(current: int, maximum: int) -> void:
 	if drop_labels.size() != maximum:
 		_build_drops(maximum)
 
 	for i in range(drop_labels.size()):
-		var lbl = drop_labels[i]
+		var drop = drop_labels[i] as TextureRect
+		if drop == null:
+			continue
 		if i < current:
-			lbl.modulate.a = 1.0
+			drop.texture = TEXTURE_DROP
+			drop.modulate.a = 1.0
+			drop.scale = Vector2.ONE
 		else:
-			if lbl.modulate.a > 0.35: # Just lost
+			if drop.modulate.a > 0.35: # Just lost
 				var tw = create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-				tw.tween_property(lbl, "scale", Vector2(1.35, 1.35), 0.1)
-				tw.tween_property(lbl, "scale", Vector2.ONE, 0.15)
-				tw.parallel().tween_property(lbl, "modulate:a", 0.28, 0.25)
+				tw.tween_property(drop, "scale", Vector2(1.3, 1.3), 0.1)
+				tw.tween_property(drop, "scale", Vector2.ONE, 0.15)
+				tw.parallel().tween_property(drop, "modulate:a", 0.28, 0.25)
 			else:
-				lbl.modulate.a = 0.28
-				lbl.scale = Vector2.ONE
+				drop.modulate.a = 0.28
+				drop.scale = Vector2.ONE

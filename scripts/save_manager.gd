@@ -7,9 +7,9 @@ static var instance: SaveManager
 
 const SAVE_PATH: String = "user://arrow_save_data.json"
 
-var highest_unlocked_level: int = 1
+var highest_unlocked_level: int = 100
 var completed_levels: Dictionary = {} # level_id (int/str) -> {"best_moves": int, "hearts": int}
-var current_level: int = 1
+var current_level: int = 98
 var coins: int = 1
 var sound_enabled: bool = true
 var vibration_enabled: bool = true
