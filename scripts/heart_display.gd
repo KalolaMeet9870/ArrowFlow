@@ -10,7 +10,7 @@ var drop_labels: Array[Control] = []
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_theme_constant_override("separation", 18)
+	add_theme_constant_override("separation", 16)
 	_build_drops(3)
 
 func _build_drops(count: int) -> void:
@@ -22,11 +22,11 @@ func _build_drops(count: int) -> void:
 		var drop = TextureRect.new()
 		drop.name = "Drop%d" % i
 		drop.texture = TEXTURE_DROP
-		drop.custom_minimum_size = Vector2(68, 94)
+		drop.custom_minimum_size = Vector2(46, 64)
 		drop.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		drop.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		drop.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		drop.pivot_offset = Vector2(34, 47)
+		drop.pivot_offset = Vector2(23, 32)
 		add_child(drop)
 		drop_labels.append(drop)
 

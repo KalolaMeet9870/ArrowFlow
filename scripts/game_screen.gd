@@ -100,7 +100,7 @@ func _update_header_bg_geometry() -> void:
 		return
 	var insets = SafeAreaHelper.get_safe_insets(get_viewport())
 	var top_h = float(insets.get("top", 48.0))
-	var bar_h = 76.0
+	var bar_h = 81.0
 	if top_margin and top_margin.size.y > 20:
 		bar_h = top_margin.size.y
 	header_bg_panel.position = Vector2.ZERO
@@ -185,24 +185,24 @@ func _build_ui() -> void:
 	bg_rect.resized.connect(func(): ambient_dots.queue_redraw())
 
 	# Safe area container to prevent system indicator and home bar overlaps
-	safe_margin_container = MarginContainer.new()
-	safe_margin_container.set_anchors_preset(Control.PRESET_FULL_RECT)
-	safe_margin_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(safe_margin_container)
-
 	# 2. Solid Header Background & Drop Shadow (extends seamlessly across status bar / safe area)
 	header_bg_panel = Panel.new()
 	header_bg_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var h_sb = StyleBoxFlat.new()
 	h_sb.bg_color = current_theme.get("bg", Color("#FAF6ED"))
 	h_sb.border_width_bottom = 1
-	h_sb.border_color = Color("#EADCC6")
-	h_sb.shadow_color = Color(0.25, 0.18, 0.10, 0.15)
-	h_sb.shadow_size = 14
-	h_sb.shadow_offset = Vector2(0, 4)
+	h_sb.border_color = Color("#EADBCA")
+	h_sb.shadow_color = Color(0.25, 0.18, 0.10, 0.06)
+	h_sb.shadow_size = 5
+	h_sb.shadow_offset = Vector2(0, 2)
 	header_bg_panel.add_theme_stylebox_override("panel", h_sb)
 	add_child(header_bg_panel)
-	move_child(header_bg_panel, 1)
+
+	# Safe area container to prevent system indicator and home bar overlaps
+	safe_margin_container = MarginContainer.new()
+	safe_margin_container.set_anchors_preset(Control.PRESET_FULL_RECT)
+	safe_margin_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(safe_margin_container)
 
 	_update_safe_areas()
 
@@ -218,7 +218,7 @@ func _build_ui() -> void:
 	top_margin.add_theme_constant_override("margin_left", 20)
 	top_margin.add_theme_constant_override("margin_right", 20)
 	top_margin.add_theme_constant_override("margin_top", 8)
-	top_margin.add_theme_constant_override("margin_bottom", 8)
+	top_margin.add_theme_constant_override("margin_bottom", 13)
 	top_margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	top_margin.resized.connect(_update_header_bg_geometry)
 	main_vbox.add_child(top_margin)
@@ -633,29 +633,29 @@ func _create_bottom_action_card(icon_text: String, label_text: String, badge_tex
 
 func _create_top_hint_button() -> Dictionary:
 	var wrapper = Control.new()
-	wrapper.custom_minimum_size = Vector2(114, 114)
+	wrapper.custom_minimum_size = Vector2(88, 88)
 
 	# 1. Circular disc background
 	var disc = Panel.new()
-	disc.custom_minimum_size = Vector2(104, 104)
-	disc.position = Vector2(5, 5)
+	disc.custom_minimum_size = Vector2(76, 76)
+	disc.position = Vector2(6, 6)
 	disc.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var disc_sb = StyleBoxFlat.new()
 	disc_sb.bg_color = Color("#FFFDF7")
 	disc_sb.border_color = Color("#EBDCC8")
 	disc_sb.set_border_width_all(2)
-	disc_sb.set_corner_radius_all(52)
+	disc_sb.set_corner_radius_all(38)
 	disc_sb.shadow_color = Color(0.35, 0.25, 0.15, 0.08)
-	disc_sb.shadow_size = 8
-	disc_sb.shadow_offset = Vector2(0, 3)
+	disc_sb.shadow_size = 5
+	disc_sb.shadow_offset = Vector2(0, 2)
 	disc.add_theme_stylebox_override("panel", disc_sb)
 	wrapper.add_child(disc)
 
 	# 2. Centered Lightbulb Icon
 	var bulb_icon = TextureRect.new()
 	bulb_icon.texture = preload("res://assets/icons/icon_bulb.png")
-	bulb_icon.custom_minimum_size = Vector2(66, 66)
-	bulb_icon.position = Vector2(19, 19)
+	bulb_icon.custom_minimum_size = Vector2(48, 48)
+	bulb_icon.position = Vector2(14, 14)
 	bulb_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	bulb_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	bulb_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -663,12 +663,12 @@ func _create_top_hint_button() -> Dictionary:
 
 	# 3. Floating Orange AD Badge pill
 	var badge_panel = PanelContainer.new()
-	badge_panel.position = Vector2(68, -4)
-	badge_panel.custom_minimum_size = Vector2(50, 30)
+	badge_panel.position = Vector2(46, 0)
+	badge_panel.custom_minimum_size = Vector2(36, 22)
 	badge_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var b_sb = StyleBoxFlat.new()
 	b_sb.bg_color = Color("#FA8800")
-	b_sb.set_corner_radius_all(15)
+	b_sb.set_corner_radius_all(11)
 	badge_panel.add_theme_stylebox_override("panel", b_sb)
 	wrapper.add_child(badge_panel)
 
@@ -677,7 +677,7 @@ func _create_top_hint_button() -> Dictionary:
 	badge_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	badge_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	badge_lbl.add_theme_font_override("font", preload("res://assets/fonts/round_bold.ttf"))
-	badge_lbl.add_theme_font_size_override("font_size", 15)
+	badge_lbl.add_theme_font_size_override("font_size", 12)
 	badge_lbl.add_theme_color_override("font_color", Color.WHITE)
 	badge_panel.add_child(badge_lbl)
 

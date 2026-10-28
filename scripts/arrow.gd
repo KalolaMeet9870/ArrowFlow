@@ -215,6 +215,7 @@ var _exit_track: PackedVector2Array = PackedVector2Array()
 var _exit_cum_dists: PackedFloat32Array = PackedFloat32Array()
 var _exit_arrow_len: float = 0.0
 var _exit_total_travel: float = 1200.0
+var _exit_final_dir: Vector2 = Vector2.RIGHT
 var exit_progress: float = 0.0:
 	set(val):
 		exit_progress = val
@@ -224,7 +225,7 @@ func _sample_track(s: float) -> Vector2:
 	if s <= 0.0:
 		return _exit_track[0]
 	if s >= _exit_cum_dists[-1]:
-		return _exit_track[-1]
+		return _exit_track[-1] + _exit_final_dir * (s - _exit_cum_dists[-1])
 	for i in range(_exit_cum_dists.size() - 1):
 		if s <= _exit_cum_dists[i + 1]:
 			var seg_l = _exit_cum_dists[i + 1] - _exit_cum_dists[i]
@@ -288,11 +289,12 @@ func _get_current_draw_points() -> PackedVector2Array:
 	res.append(_sample_track(s_head))
 	return res
 
-func animate_exit(target_pos: Vector2 = Vector2.ZERO, duration: float = 0.35) -> void:
+func animate_exit(target_pos: Vector2 = Vector2.ZERO, duration: float = 0.62) -> void:
 	state = ArrowState.EXITING
 	input_pickable = false
 	if collision_shape:
 		collision_shape.disabled = true
+	z_index = 20
 
 	if SoundManager.instance:
 		SoundManager.instance.play_whoosh()
@@ -305,11 +307,35 @@ func animate_exit(target_pos: Vector2 = Vector2.ZERO, duration: float = 0.35) ->
 		var last_seg = tip - base_pts[-2]
 		if last_seg.length_squared() > 0.001:
 			f_dir = last_seg.normalized()
+	_exit_final_dir = f_dir
+
+	# Calculate distance to viewport edge along f_dir for a smooth, natural glide
+	var vp_size = get_viewport_rect().size
+	if vp_size.x <= 10.0 or vp_size.y <= 10.0:
+		vp_size = Vector2(720.0, 1280.0)
+
+	var tip_glob = global_position + tip
+	var d_candidates: Array[float] = []
+	if f_dir.x > 0.01:
+		d_candidates.append((vp_size.x - tip_glob.x) / f_dir.x)
+	elif f_dir.x < -0.01:
+		d_candidates.append((0.0 - tip_glob.x) / f_dir.x)
+
+	if f_dir.y > 0.01:
+		d_candidates.append((vp_size.y - tip_glob.y) / f_dir.y)
+	elif f_dir.y < -0.01:
+		d_candidates.append((0.0 - tip_glob.y) / f_dir.y)
+
+	var min_pos: float = -1.0
+	for d in d_candidates:
+		if d > 0.0:
+			if min_pos < 0.0 or d < min_pos:
+				min_pos = d
+
+	var dist_to_edge: float = min_pos if min_pos > 0.0 else 750.0
+	var exit_dist: float = dist_to_edge + 140.0
 
 	_exit_track = base_pts.duplicate()
-	var exit_dist = 3000.0
-	if target_pos != Vector2.ZERO:
-		exit_dist = maxf(exit_dist, global_position.distance_to(target_pos) + 1200.0)
 	_exit_track.append(tip + f_dir * exit_dist)
 
 	_exit_cum_dists = PackedFloat32Array([0.0])
@@ -317,20 +343,19 @@ func animate_exit(target_pos: Vector2 = Vector2.ZERO, duration: float = 0.35) ->
 		_exit_cum_dists.append(_exit_cum_dists[i] + _exit_track[i].distance_to(_exit_track[i + 1]))
 
 	_exit_arrow_len = _exit_cum_dists[_exit_track.size() - 2]
-	# Total travel distance ensures the TAIL of the arrow completely clears the entire exit track off-screen:
-	_exit_total_travel = _exit_cum_dists[-1] + _exit_arrow_len + 200.0
+	# Total travel distance ensures the TAIL completely clears the screen margin
+	_exit_total_travel = _exit_cum_dists[-1]
 
 	_is_exiting = true
 	exit_progress = 0.0
 
 	var tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tween.tween_property(self, "exit_progress", 1.0, duration)
-	# Remain fully visible while flying through the screen; only fade out at the very end outside the viewport:
-	tween.tween_property(self, "modulate:a", 0.0, duration * 0.22).set_delay(duration * 0.78)
 
 	tween.chain().tween_callback(func():
 		state = ArrowState.REMOVED
 		_is_exiting = false
+		z_index = 0
 		arrow_exit_completed.emit(self)
 	)
 
