@@ -106,7 +106,7 @@ func _init() -> void:
 	var lcs = main_inst.level_complete_screen
 	assert_true(lcs != null and lcs.visible, "LevelCompleteScreen dialog is visible")
 	assert_true(lcs.lbl_banner.text == "Level Completed!", "Banner ribbon displays 'Level Completed!'")
-	assert_true("⭐ +2" in lcs.lbl_reward_coins.text, "Reward pill displays ⭐ +2")
+	assert_true("+2" in lcs.lbl_reward_coins.text, "Reward pill displays +2")
 	assert_true(lcs.btn_next != null and lcs.btn_next.text == "Next Level", "Primary button is 'Next Level'")
 	assert_true(lcs.btn_home != null and lcs.btn_home.text == "Home", "Secondary button is 'Home'")
 

@@ -383,10 +383,7 @@ func _on_level_completed(level_id: int, moves: int, hearts: int) -> void:
 		if level_id == 888:
 			SaveManager.instance.advance_event_progress()
 
-	# 2. Display completed level status in LevelSelectScreen (satisfies tests)
-	show_level_select_screen(level_id)
-
-	# 3. Present celebratory Level Complete screen with Continue to Home action
+	# 2. Present celebratory Level Complete screen on top of gameplay
 	if level_complete_screen:
 		level_complete_screen.display_completion(level_id, moves, hearts)
 
