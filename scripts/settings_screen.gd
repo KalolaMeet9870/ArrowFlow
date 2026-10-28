@@ -159,7 +159,9 @@ func _build_ui() -> void:
 	prefs_vbox.add_child(_create_chevron_row("🌐", "Language", "English", func():
 		_play_click()
 	))
-	prefs_vbox.add_child(_create_divider())
+	var div_theme = _create_divider()
+	div_theme.visible = false
+	prefs_vbox.add_child(div_theme)
 
 	var cur_theme_name = "Light"
 	if ThemeManager.instance:
@@ -169,6 +171,7 @@ func _build_ui() -> void:
 		theme_requested.emit()
 	)
 	lbl_theme_val = theme_row.get_meta("val_label") as Label
+	theme_row.visible = false
 	prefs_vbox.add_child(theme_row)
 
 	# --- CARD 3: LINKS & TUTORIAL (Image 10) ---

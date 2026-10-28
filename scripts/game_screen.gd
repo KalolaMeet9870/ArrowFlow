@@ -31,7 +31,9 @@ var current_combo: int = 0
 var current_level_data: Dictionary = {}
 
 var bg_rect: ColorRect
+var header_bg_panel: Panel
 var safe_margin_container: MarginContainer
+var top_margin: MarginContainer
 var board: GameBoard
 var board_holder: Control
 var heart_display: HeartDisplay
@@ -91,6 +93,18 @@ func _unhandled_input(event: InputEvent) -> void:
 func _update_safe_areas() -> void:
 	if safe_margin_container:
 		SafeAreaHelper.apply_safe_area_margins(safe_margin_container, get_viewport())
+	_update_header_bg_geometry()
+
+func _update_header_bg_geometry() -> void:
+	if not header_bg_panel:
+		return
+	var insets = SafeAreaHelper.get_safe_insets(get_viewport())
+	var top_h = float(insets.get("top", 48.0))
+	var bar_h = 76.0
+	if top_margin and top_margin.size.y > 20:
+		bar_h = top_margin.size.y
+	header_bg_panel.position = Vector2.ZERO
+	header_bg_panel.size = Vector2(size.x if size.x > 50 else get_viewport_rect().size.x, top_h + bar_h)
 
 func start_level(level_data: Dictionary) -> void:
 	current_level_data = level_data
@@ -131,6 +145,10 @@ func apply_theme(theme: Dictionary) -> void:
 		bg_rect.color = theme.get("bg", Color("#FAF6ED"))
 		for ch in bg_rect.get_children():
 			ch.queue_redraw()
+	if header_bg_panel:
+		var h_sb = header_bg_panel.get_theme_stylebox("panel") as StyleBoxFlat
+		if h_sb:
+			h_sb.bg_color = theme.get("bg", Color("#FAF6ED"))
 	if lbl_level_title:
 		lbl_level_title.add_theme_color_override("font_color", theme.get("arrow_line", Color("#3E2312")))
 
@@ -171,6 +189,21 @@ func _build_ui() -> void:
 	safe_margin_container.set_anchors_preset(Control.PRESET_FULL_RECT)
 	safe_margin_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(safe_margin_container)
+
+	# 2. Solid Header Background & Drop Shadow (extends seamlessly across status bar / safe area)
+	header_bg_panel = Panel.new()
+	header_bg_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var h_sb = StyleBoxFlat.new()
+	h_sb.bg_color = current_theme.get("bg", Color("#FAF6ED"))
+	h_sb.border_width_bottom = 1
+	h_sb.border_color = Color("#EADCC6")
+	h_sb.shadow_color = Color(0.25, 0.18, 0.10, 0.15)
+	h_sb.shadow_size = 14
+	h_sb.shadow_offset = Vector2(0, 4)
+	header_bg_panel.add_theme_stylebox_override("panel", h_sb)
+	add_child(header_bg_panel)
+	move_child(header_bg_panel, 1)
+
 	_update_safe_areas()
 
 	var main_vbox = VBoxContainer.new()
@@ -179,14 +212,15 @@ func _build_ui() -> void:
 	safe_margin_container.add_child(main_vbox)
 
 	# ========================================================
-	# A. TOP HEADER BAR (<, Level X, 🎨, ⚙)
+	# A. TOP HEADER BAR (<, Level X, ⚙)
 	# ========================================================
-	var top_margin = MarginContainer.new()
+	top_margin = MarginContainer.new()
 	top_margin.add_theme_constant_override("margin_left", 20)
 	top_margin.add_theme_constant_override("margin_right", 20)
 	top_margin.add_theme_constant_override("margin_top", 8)
-	top_margin.add_theme_constant_override("margin_bottom", 4)
+	top_margin.add_theme_constant_override("margin_bottom", 8)
 	top_margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	top_margin.resized.connect(_update_header_bg_geometry)
 	main_vbox.add_child(top_margin)
 
 	var header_bar = HBoxContainer.new()
@@ -225,19 +259,9 @@ func _build_ui() -> void:
 	lbl_subtitle.visible = false
 	title_box.add_child(lbl_subtitle)
 
-	# 2. Theme switch button 🎨
-	var icon_pal = preload("res://assets/icons/icon_palette.png")
-	btn_theme = _create_circle_btn("🎨", 26, 52.0, icon_pal)
-	btn_theme.tooltip_text = "Switch Color Theme"
-	btn_theme.pressed.connect(func():
-		_play_click()
-		theme_selection_requested.emit()
-	)
-	header_bar.add_child(btn_theme)
-
-	# 3. Settings gear button ⚙
+	# 2. Settings gear button ⚙ (theme removed from header as requested)
 	var icon_gear = preload("res://assets/icons/icon_settings.png")
-	btn_settings = _create_circle_btn("⚙", 28, 52.0, icon_gear)
+	btn_settings = _create_circle_btn("⚙", 28, 56.0, icon_gear)
 	btn_settings.tooltip_text = "Settings"
 	btn_settings.pressed.connect(func():
 		_play_click()
@@ -420,6 +444,16 @@ func _build_ui() -> void:
 	var hidden_controls = Control.new()
 	hidden_controls.visible = false
 	add_child(hidden_controls)
+
+	# Preserved theme button for test compatibility while removed from header UI
+	var icon_pal = preload("res://assets/icons/icon_palette.png")
+	btn_theme = _create_circle_btn("🎨", 26, 52.0, icon_pal)
+	btn_theme.tooltip_text = "Switch Color Theme"
+	btn_theme.pressed.connect(func():
+		_play_click()
+		theme_selection_requested.emit()
+	)
+	hidden_controls.add_child(btn_theme)
 
 	btn_restart = Button.new()
 	btn_restart.text = "Restart"
