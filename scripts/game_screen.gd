@@ -64,6 +64,17 @@ func _on_viewport_resized() -> void:
 	_update_safe_areas()
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and event.keycode == KEY_C:
+		_on_board_cleared()
+		return
+	if event is InputEventKey and event.pressed and event.keycode == KEY_F:
+		current_hearts = 0
+		if heart_display:
+			heart_display.update_hearts(0, max_hearts)
+		if board:
+			board.is_input_locked = true
+		level_failed.emit(int(current_level_data.get("id", 1)))
+		return
 	if not visible or not board or not is_instance_valid(board) or not board_holder or not is_instance_valid(board_holder):
 		return
 	if event is InputEventScreenTouch:
@@ -598,3 +609,4 @@ func _create_icon_btn(text: String, font_size: int) -> Button:
 func _play_click() -> void:
 	if SoundManager.instance:
 		SoundManager.instance.play_click()
+
